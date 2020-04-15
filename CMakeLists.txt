@@ -66,4 +66,6 @@ install(TARGETS lib_sonarcov
 #############
 ## Testing ##
 #############
-
+if(CATKIN_ENABLE_TESTING)
+  add_subdirectory(./unit_tests)
+endif()
