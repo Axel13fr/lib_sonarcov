@@ -80,7 +80,7 @@ before_install:
   - sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
   - sudo apt-get update -qq
   - sudo apt-get install dpkg
-  - sudo apt-get install -y python-catkin-pkg ros-$ROS_DISTRO-catkin python-rosdep python-wstool python3-pip ros-$ROS_DISTRO-ros-base libeigen3-dev
+  - sudo apt-get install -y python-catkin-pkg python-catkin-tools ros-$ROS_DISTRO-catkin python-rosdep python-wstool python3-pip ros-$ROS_DISTRO-ros-base libeigen3-dev
   - source /opt/ros/$ROS_DISTRO/setup.bash
   # Prepare rosdep to install dependencies.
   - sudo rosdep init
@@ -91,7 +91,7 @@ before_install:
   - sudo pip install --upgrade statick --ignore-installed PyYAML
 
   # Python3.6 and black.
-  - sudo apt-get install -y software-properties-common python-software-properties
+  - sudo apt-get install -y software-properties-common
   - sudo add-apt-repository ppa:deadsnakes/ppa -y
   - sudo apt-get update
   - sudo apt-get install -y python3.6
