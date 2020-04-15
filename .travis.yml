@@ -87,8 +87,8 @@ before_install:
   - rosdep update --include-eol-distros  # Support EOL distros.
 
   # Prepare Statick.
-  - sudo apt-get install -y cccc clang-3.9 clang-format-3.9 clang-tidy-3.9 cppcheck flawfinder libxml2-utils maven pylint python-catkin-lint python-git python-yapsy python-yapsy python3-setuptools ros-$ROS_DISTRO-roslint uncrustify
-  - sudo pip install --upgrade statick --ignore-installed PyYAML
+  .Create- sudo apt-get install -y cccc clang-3.9 clang-format-3.9 clang-tidy-3.9 cppcheck flawfinder libxml2-utils maven pylint python-catkin-lint python-git python-yapsy python-yapsy python3-setuptools ros-$ROS_DISTRO-roslint uncrustify
+  - sudo pip3 install --upgrade statick --ignore-installed PyYAML
 
   # Python3.6 and black.
   - sudo apt-get install -y software-properties-common
@@ -141,7 +141,7 @@ script:
   - catkin build $( [ -f $CATKIN_OPTIONS ] && cat $CATKIN_OPTIONS )
   - source devel/setup.bash
 
-  - cp /usr/local/lib/python3.5/dist-packages/statick_tool/rsc/.clang-format /home/travis/_clang-format
+  - cp /usr/local/lib/python2.7/dist-packages/statick_tool/rsc/.clang-format /home/travis/_clang-format
   - mkdir statick-output
   - statick src/lib_sonarcov --output-directory statick-output --user-paths ./src/lib_sonarcov/statick_config --clang-format-ignore-exception
 
