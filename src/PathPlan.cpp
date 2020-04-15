@@ -14,6 +14,8 @@
 #include <iterator>
 #include <iostream>
 
+
+using namespace scov;
 static constexpr auto DEBUG = false;
 namespace bg = boost::geometry;
 static const Eigen::IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");

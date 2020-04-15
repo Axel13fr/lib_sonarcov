@@ -17,6 +17,8 @@
 #include <boost/geometry/geometries/geometries.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
 
+namespace scov {
+
 // To get a single point EPointList.col(i)
 using EPointList = Eigen::Matrix<double, 2, Eigen::Dynamic>;
 
@@ -224,3 +226,5 @@ class PathPlan
     std::list<Eigen::Vector2d> m_next_path_pts;
     PathList m_raw_path;
 };
+
+}

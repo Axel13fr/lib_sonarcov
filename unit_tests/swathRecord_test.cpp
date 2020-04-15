@@ -1,12 +1,22 @@
+#include "lib_sonarcov/SwathRecord.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 using ::testing::_;
+using namespace scov;
 
-TEST(SwathRecord, CanTest)
+TEST(SwathRecord, CanComputeOuterPoints)
 {
-	EXPECT_TRUE(true);
+    SwathRecord r{50., 100., 90., 35., 33., 16};
+    auto p = r.outerPoint(BoatSide::Port);
+    EXPECT_EQ(p.x(), 50);
+    EXPECT_EQ(p.y(), 100 + 33);
+
+    SwathRecord r2{50., 100., 0, 65., 48., 33};
+    p = r2.outerPoint(BoatSide::Stbd);
+    EXPECT_EQ(p.x(), 50+65);
+    EXPECT_EQ(p.y(), 100);
 }
 
 int main(int argc, char** argv)

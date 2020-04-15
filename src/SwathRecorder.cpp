@@ -10,6 +10,8 @@
 #include <cmath>
 #include <algorithm>
 
+using namespace scov;
+
 static constexpr auto DEBUG = false;
 static constexpr auto TURN_THRESHOLD = 20;
 

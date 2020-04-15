@@ -16,6 +16,8 @@
 #include <vector>
 #include <map>
 
+namespace scov{
+
 using EPoint = Eigen::Vector2d;
 using EPointVec = std::vector<EPoint>;
 
@@ -137,3 +139,4 @@ public:
   BoatSide m_output_side;
 
 };
+}

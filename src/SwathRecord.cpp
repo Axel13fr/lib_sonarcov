@@ -1,6 +1,8 @@
 #include "lib_sonarcov/SwathRecord.h"
 #include <cmath>
 
+using namespace scov;
+
 //---------------------------------------------------------------
 // Procedure: angle360
 //   Purpose: Convert angle to be strictly in the rang [0, 360).
