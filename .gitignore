@@ -32,4 +32,4 @@
 *.app
 
 # QtCreator 
-*.CMakeLists.txt.user
+*.txt.user
