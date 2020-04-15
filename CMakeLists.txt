@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(lib_sonarcov)
 
 set(CMAKE_CXX_STANDARD 14)
+add_compile_options(-std=c++14 -Wall -Werror=return-type -fPIC)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
