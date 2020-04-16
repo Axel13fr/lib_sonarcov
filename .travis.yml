@@ -143,7 +143,7 @@ script:
 
   - cp /usr/local/lib/python3.6/dist-packages/statick_tool/rsc/.clang-format /home/travis/_clang-format
   - mkdir statick-output
-  - python3 statick src/lib_sonarcov --output-directory statick-output --user-paths ./src/lib_sonarcov/statick_config --clang-format-ignore-exception
+  - statick src/lib_sonarcov --output-directory statick-output --user-paths ./src/lib_sonarcov/statick_config --clang-format-ignore-exception
 
   # Run the tests, ensuring the path is set correctly.
   - rm -rf build devel
