@@ -1,6 +1,6 @@
 ---
 packages:
-  node_example:
+  lib_sonarcov:
     exceptions:
       file:
         # System headers
