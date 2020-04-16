@@ -9,10 +9,26 @@ using namespace scov;
 TEST(SwathRecorder, CanAddRecord)
 {
   SwathRecorder rec;
-  EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Stbd).empty());
+  rec.SetOutputSide(BoatSide::Port);
+  EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 
   SwathRecord r{50., 100., 90., 35., 33., 16};
   rec.AddRecord(r);
+  // First record is not directly added, only a start ref point
+  EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
+
+  // Duplicates are ignored
+  rec.AddRecord(r);
+  EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
+
+  // Expect 10meters of interval to add record
+  SwathRecord r2{54., 104., 90., 35., 33., 16};
+  rec.AddRecord(r2);
+  EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
+
+  // Now we have a new record far enough
+  SwathRecord r3{60., 110., 90., 35., 33., 16};
+  rec.AddRecord(r3);
   EXPECT_FALSE(rec.SwathOuterPts(BoatSide::Port).empty());
 }
 

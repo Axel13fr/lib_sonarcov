@@ -128,7 +128,7 @@ public:
 
   // State variables
   std::vector<SwathRecord> m_interval_record;
-  std::list<SwathRecord> m_min_record;
+  std::vector<SwathRecord> m_min_record;
   std::map<BoatSide, std::vector<double>> m_interval_swath;
   double m_last_x;
   double m_last_y;

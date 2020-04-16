@@ -14,7 +14,7 @@
 using namespace scov;
 using namespace ang;
 
-static constexpr auto DEBUG = false;
+static constexpr auto DEBUG = true;
 static constexpr auto TURN_THRESHOLD = 20;
 
 //---------------------------------------------------------
@@ -44,6 +44,7 @@ bool SwathRecorder::AddRecord(const SwathRecord &r)
     if (m_has_records)
     {
         m_acc_dist += hypot((m_last_x - r.loc_x), (m_last_y - r.loc_y));
+        std::cout << m_acc_dist << std::endl;
 
         ROS_DEBUG_STREAM_COND(DEBUG, "Accumulated distance: " + std::to_string(m_acc_dist) + "\n");
 
@@ -52,11 +53,13 @@ bool SwathRecorder::AddRecord(const SwathRecord &r)
             ROS_DEBUG_STREAM_COND(DEBUG, "Running MinInterval()\n");
             m_acc_dist = 0;
             MinInterval();
-        } 
-        else
+        }
+        else if(not m_min_record.empty())
         {
             //Override the min interval on turns to the outside
             double turn = angle180(angle180(r.heading) - angle180(m_min_record.back().heading));
+            std::cout << turn << std::endl;
+            std::cout << m_min_record.size() << std::endl;
             if ((turn > TURN_THRESHOLD && m_output_side == BoatSide::Port)
                     || (turn < -TURN_THRESHOLD && m_output_side == BoatSide::Stbd))
             {
@@ -79,6 +82,7 @@ bool SwathRecorder::AddRecord(const SwathRecord &r)
 
 bool SwathRecorder::AddToCoverage(SwathRecord record)
 {
+    (void)record;
     // Tackle this later
     return true;
 }
@@ -89,7 +93,6 @@ void SwathRecorder::MinInterval()
     if (m_output_side == BoatSide::Unknown)
     {
         throw std::runtime_error("Cannot find swath minimum without output side.");
-        return;
     }
     std::vector<double>* side_record = &m_interval_swath[m_output_side];
 
@@ -167,16 +170,17 @@ double SwathRecorder::SwathWidth(BoatSide side, size_t index)
 {
     if (m_min_record.size() > index)
     {
-        std::list<SwathRecord>::iterator list_record = std::next(m_min_record.begin(), index);
+        const auto r = m_min_record[index];
         if (side == BoatSide::Stbd)
         {
-            return list_record->swath_stbd;
+            return r.swath_stbd;
         }
         else if (side == BoatSide::Port)
         {
-            return list_record->swath_port;
+            return r.swath_port;
         }
     }
+    // TODO: proper error handling ?
     return 0;
 }
 
@@ -184,16 +188,15 @@ std::vector<double> SwathRecorder::AllSwathWidths(BoatSide side)
 {
     std::vector<double> widths;
     widths.reserve(m_min_record.size());
-    std::list<SwathRecord>::iterator list_record;
-    for (list_record = m_min_record.begin(); list_record != m_min_record.end(); list_record++)
+    for (const auto& r : m_min_record)
     {
         if (side == BoatSide::Stbd)
         {
-            widths.push_back(list_record->swath_stbd);
+            widths.push_back(r.swath_stbd);
         }
         else if (side == BoatSide::Port)
         {
-            widths.push_back(list_record->swath_port);
+            widths.push_back(r.swath_port);
         }
     }
     return widths;
@@ -203,8 +206,8 @@ EPoint SwathRecorder::SwathLocation(unsigned int index)
 {
     if (m_min_record.size() > index)
     {
-        std::list<SwathRecord>::iterator list_record = std::next(m_min_record.begin(), index);
-        return EPoint(list_record->loc_x, list_record->loc_y);
+        const auto r = m_min_record[index];
+        return EPoint(r.loc_x, r.loc_y);
     }
     throw std::out_of_range("Swath index out of range.");
 }
