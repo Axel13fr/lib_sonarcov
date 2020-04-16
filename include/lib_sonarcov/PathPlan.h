@@ -21,11 +21,6 @@ namespace scov {
 
 // To get a single point EPointList.col(i)
 using EPointList = Eigen::Matrix<double, 2, Eigen::Dynamic>;
-
-enum EPoint_E{
-    X = 0,
-    Y
-};
 using EPoint = Eigen::Vector2d;
 using PathList = std::list<EPoint>;
 

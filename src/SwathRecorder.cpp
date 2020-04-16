@@ -6,26 +6,16 @@
 /************************************************************/
 
 #include "lib_sonarcov/SwathRecorder.h"
+#include "lib_sonarcov/AngleUtils.h"
 #include <ros/console.h>
 #include <cmath>
 #include <algorithm>
 
 using namespace scov;
+using namespace ang;
 
 static constexpr auto DEBUG = false;
 static constexpr auto TURN_THRESHOLD = 20;
-
-// Procedure: angle180
-//   Purpose: Convert angle to be strictly in the rang (-180, 180].
-
-static double angle180(double degval)
-{
-    while(degval > 180)
-        degval -= 360.0;
-    while(degval <= -180)
-        degval += 360.0;
-    return(degval);
-}
 
 //---------------------------------------------------------
 // Constructor

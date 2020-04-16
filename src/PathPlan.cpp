@@ -59,13 +59,13 @@ PathList PathPlan::GenerateNextPath() {
     Eigen::Vector2d forward_vec;
     bool back_vec_set = false;
     if (i > 0) {
-      back_vec =  EPoint(edge_pts[i][X] - edge_pts[i-1][X],
-                         edge_pts[i][Y] - edge_pts[i-1][Y]);
+      back_vec =  EPoint(edge_pts[i].x() - edge_pts[i-1].x(),
+                        edge_pts[i].y() - edge_pts[i-1].y());
       back_vec_set = true;
     }
     if (i < edge_pts.size() - 1) {
-      forward_vec = EPoint(edge_pts[i+1][X] - edge_pts[i][X],
-          edge_pts[i+1][Y] - edge_pts[i][Y]);
+      forward_vec = EPoint(edge_pts[i+1].x() - edge_pts[i].x(),
+                           edge_pts[i+1].y() - edge_pts[i].y());
     } else {
       forward_vec = back_vec;
     }
@@ -87,7 +87,7 @@ PathList PathPlan::GenerateNextPath() {
       offset_vec *= swath_width * (1 - m_margin);
 
       // Get offset location and save
-      Eigen::Vector2d swath_loc(edge_pts[i][X], edge_pts[i][Y]);
+      Eigen::Vector2d swath_loc(edge_pts[i].x(), edge_pts[i].y());
       m_next_path_pts.push_back(swath_loc + offset_vec);
 
 //       ROS_DEBUG_STREAM_COND(DEBUG,"Swath Width: %0.2f  Offset X: %0.2f Offset Y: %0.2f Avg Vec: <%0.2f, %0.2f>\n",
@@ -487,15 +487,7 @@ std::pair<bool, bool> PathPlan::ClipToRegion2(std::list<EPoint> &path_pts) {
 
   if (found_crossing) {
     // Find the intersection point
-    #if ((BOOST_VERSION / 100000) >= 1 && ((BOOST_VERSION / 100) % 1000) >= 59)
-    //#if !defined(BOOST_NO_CXX11_UNIFIED_INITIALIZATION_SYNTAX) \
-    //  && !defined(BOOST_NO_CXX11_HDR_INITIALIZER_LIST)
-    BLinestring segment({last_outside, last_inside});
-    #else
-    BLinestring segment;
-    boost::geometry::append(segment, last_outside);
-    boost::geometry::append(segment, last_inside);
-    #endif
+    BLinestring segment(std::initializer_list<BPoint>{last_outside, last_inside});
     std::vector<BPoint> intersect_pts;
 
     boost::geometry::intersection(segment, outer_ring, intersect_pts);

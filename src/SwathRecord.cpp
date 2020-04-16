@@ -1,45 +1,9 @@
 #include "lib_sonarcov/SwathRecord.h"
+#include "lib_sonarcov/AngleUtils.h"
 #include <cmath>
 
 using namespace scov;
-
-//---------------------------------------------------------------
-// Procedure: angle360
-//   Purpose: Convert angle to be strictly in the rang [0, 360).
-
-static double angle360(double degval)
-{
-    while (degval >= 360.0)
-        degval -= 360.0;
-    while (degval < 0.0)
-        degval += 360.0;
-    return (degval);
-}
-
-//---------------------------------------------------------------
-// Procedure: radAngleWrap
-
-static double radAngleWrap(double radval)
-{
-    if ((radval <= M_PI) && (radval >= -M_PI))
-        return (radval);
-
-    if (radval > M_PI)
-        return (radval - (2 * M_PI));
-    else
-        return (radval + (2 * M_PI));
-}
-
-//---------------------------------------------------------------
-// Procedure: headingToRadians
-// Converts true heading (clockwize from N) to
-// radians in a counterclockwize x(E) - y(N) coordinate system
-// .
-
-static double headingToRadians(double degval)
-{
-    return (radAngleWrap((90.0 - degval) * M_PI / 180.0));
-}
+using namespace ang;
 
 EPoint SwathRecord::outerPoint(BoatSide side) const
 {
