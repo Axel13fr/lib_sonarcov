@@ -152,4 +152,4 @@ after_success:
   - cat coverage.info # for debug
   # Uploading report to CodeCov
   - cd ~/catkin_ws/src/lib_sonarcov
-  - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+  - codecov --gcov-root ~/catkin_ws/build/
