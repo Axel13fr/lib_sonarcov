@@ -67,10 +67,6 @@ env:
     - CATKIN_OPTIONS=$CI_SOURCE_PATH/catkin.options
     - ROS_PARALLEL_JOBS='-j8 -l6'
     - TRAVIS_CI_PATH=$(pwd)
-    # Set the python path manually to include /usr/-/python2.7/dist-packages
-    # as this is where apt-get installs python packages.
-    - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages:/usr/local/lib/python2.7/dist-packages
-    - CODECOV_TOKEN="21713619-51c8-4aa6-9902-a8488a78ecdc"
 
 ################################################################################
 
@@ -92,9 +88,9 @@ before_install:
   # Prepare Statick.
   - sudo pip uninstall -y enum34
   - sudo apt-get install -y cccc clang-3.9 clang-format-3.9 clang-tidy-3.9 cppcheck flawfinder libxml2-utils maven pylint python-catkin-lint python-git python-yapsy python-yapsy python3-setuptools ros-$ROS_DISTRO-roslint uncrustify
-  - sudo pip3 install --upgrade pip
-  - sudo pip3 install --upgrade setuptools
-  - sudo pip3 install --upgrade statick
+  - python3 -m pip install --upgrade --user pip
+  - python3 -m pip install --upgrade --user setuptools
+  - python3 -m pip install --upgrade --user statick
 
 # Create a catkin workspace with the package under integration.
 install:
