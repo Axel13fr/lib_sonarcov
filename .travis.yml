@@ -148,5 +148,6 @@ after_success:
   - lcov --capture --directory . --output-file coverage.info
   - lcov --remove coverage.info '/usr/*' 'unit_tests/*' --output-file coverage.info # filter system-files
   - lcov --list coverage.info # debug info
+  - cat coverage.info # for debug
   # Uploading report to CodeCov
-  - bash <(curl -s https://codecov.io/bash) -d -f coverage.info || echo "Codecov did not collect coverage reports"
+  - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
