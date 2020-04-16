@@ -44,7 +44,6 @@ bool SwathRecorder::AddRecord(const SwathRecord &r)
     if (m_has_records)
     {
         m_acc_dist += hypot((m_last_x - r.loc_x), (m_last_y - r.loc_y));
-        std::cout << m_acc_dist << std::endl;
 
         ROS_DEBUG_STREAM_COND(DEBUG, "Accumulated distance: " + std::to_string(m_acc_dist) + "\n");
 
@@ -58,8 +57,6 @@ bool SwathRecorder::AddRecord(const SwathRecord &r)
         {
             //Override the min interval on turns to the outside
             double turn = angle180(angle180(r.heading) - angle180(m_min_record.back().heading));
-            std::cout << turn << std::endl;
-            std::cout << m_min_record.size() << std::endl;
             if ((turn > TURN_THRESHOLD && m_output_side == BoatSide::Port)
                     || (turn < -TURN_THRESHOLD && m_output_side == BoatSide::Stbd))
             {

@@ -26,10 +26,15 @@ TEST(SwathRecorder, CanAddRecord)
   rec.AddRecord(r2);
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 
-  // Now we have a new record far enough
+  // Now we have a new record far enough to be added
   SwathRecord r3{60., 110., 90., 35., 33., 16};
   rec.AddRecord(r3);
   EXPECT_FALSE(rec.SwathOuterPts(BoatSide::Port).empty());
+
+  // Add a record not that far but with a different angle (turn)
+  SwathRecord r4{65., 112., 111., 35., 33., 16};
+  rec.AddRecord(r4);
+  EXPECT_EQ(rec.recordsNumber(),2);
 }
 
 int main(int argc, char** argv)

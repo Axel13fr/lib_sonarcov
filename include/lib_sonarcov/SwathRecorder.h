@@ -106,7 +106,16 @@ public:
    */
   bool ValidRecord();
 
- protected:
+  /**
+   * @brief recordsNumber
+   * @return number of records accumulated after decimation by the recorder
+   */
+  size_t recordsNumber()
+  {
+    return m_min_record.size();
+  }
+
+ private:
   /**
   * Determines the minimum swath over the recorded interval and places it into
   * a list of minimums.
@@ -121,7 +130,6 @@ public:
   */
   bool AddToCoverage(SwathRecord record);
 
- private:
   // Configuration Variables
   double m_min_allowable_swath;
   double m_interval;
