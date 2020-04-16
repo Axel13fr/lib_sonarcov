@@ -31,8 +31,8 @@ enum class BoatSide
 class SwathRecord
 {
  public:
-  double loc_x;  // Sonar position in meters
-  double loc_y;  // Sonar position in meters
+  double loc_x;  // X Sonar position in meters
+  double loc_y;  // Y Sonar position in meters
   double heading;// Sonar heading, true heading (clockwise from N)
   // Could make this a map w/ BoatSide index
   double swath_stbd;

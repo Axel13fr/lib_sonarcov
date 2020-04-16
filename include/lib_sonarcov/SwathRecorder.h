@@ -40,8 +40,7 @@ public:
   * @param  heading    Heading of the vessel at the time of recording
   * @return            True if the record coverage was successfully added
   */
-  bool AddRecord(double swath_stbd, double swath_port, double loc_x, double loc_y,
-        double heading, double depth);
+  bool AddRecord(const SwathRecord& r);
   /**
   * Resets the storage for a new line.
   */
