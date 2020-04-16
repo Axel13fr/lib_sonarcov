@@ -87,8 +87,8 @@ before_install:
   - rosdep update --include-eol-distros  # Support EOL distros.
 
   # Prepare Statick.
-  - sudo apt-get install -y cccc clang-3.9 clang-format-3.9 clang-tidy-3.9 cppcheck flawfinder libxml2-utils maven pylint python-catkin-lint python-git python-yapsy python-yapsy python3-setuptools ros-$ROS_DISTRO-roslint uncrustify
-  - sudo pip3 install --upgrade statick --ignore-installed PyYAML
+  #- sudo apt-get install -y cccc clang-3.9 clang-format-3.9 clang-tidy-3.9 cppcheck flawfinder libxml2-utils maven pylint python-catkin-lint python-git python-yapsy python-yapsy python3-setuptools ros-$ROS_DISTRO-roslint uncrustify
+  #- sudo pip3 install --upgrade statick --ignore-installed PyYAML
 
 # Create a catkin workspace with the package under integration.
 install:
@@ -115,7 +115,7 @@ before_script:
   # package depdencies: install using rosdep.
   - cd ~/catkin_ws
   - rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
-  - ROS_PYTHON_VERSION=3 rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
+  #- ROS_PYTHON_VERSION=3 rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
 
 # Compile and test (mark the build as failed if any step fails). If the
 # CATKIN_OPTIONS file exists, use it as an argument to catkin_make, for example
@@ -131,12 +131,9 @@ script:
   - catkin build $( [ -f $CATKIN_OPTIONS ] && cat $CATKIN_OPTIONS )
   - source devel/setup.bash
 
-  - mkdir statick-output
-  - cp /usr/local/lib/python3.5/dist-packages/statick_tool/rsc/.clang-format /home/travis
-  - whereis python
-  - whereis statick
-  - whereis python3
-  - python3 statick src/lib_sonarcov --output-directory statick-output --user-paths src/lib_sonarcov/statick_config --clang-format-ignore-exception
+  - #mkdir statick-output
+  - #cp /usr/local/lib/python3.5/dist-packages/statick_tool/rsc/.clang-format /home/travis
+  - #statick src/lib_sonarcov --output-directory statick-output --user-paths src/lib_sonarcov/statick_config --clang-format-ignore-exception
 
   # Run the tests, ensuring the path is set correctly.
   - rm -rf build devel
@@ -144,6 +141,6 @@ script:
   - catkin build
   - catkin run_tests -i && catkin_test_results
   - cd src/lib_sonarcov
-  - codecov --gcov-root ~/catkin_ws/build/
+  - codecov --gcov-root ~/catkin_ws/build/ --gcov-glob '/usr/*'
 after_success:
   - bash <(curl -s https://codecov.io/bash)
