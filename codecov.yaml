@@ -15,4 +15,4 @@ parsers:
       macro: no
 
 fixes:
-   - "/home/travis/catkin_ws/::"
+   - "/home/travis/catkin_ws/src/lib_sonarcov/::"
