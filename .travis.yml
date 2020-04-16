@@ -90,6 +90,8 @@ before_install:
   - rosdep update --include-eol-distros  # Support EOL distros.
 
   # Prepare Statick.
+  - pip freeze | grep enum34
+  - pip3 freeze | grep enum34
   - sudo apt-get install -y cccc clang-3.9 clang-format-3.9 clang-tidy-3.9 cppcheck flawfinder libxml2-utils maven pylint python-catkin-lint python-git python-yapsy python-yapsy python3-setuptools ros-$ROS_DISTRO-roslint uncrustify
   - sudo pip3 install --upgrade pip
   - sudo pip3 install --upgrade setuptools
