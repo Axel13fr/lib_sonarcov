@@ -87,8 +87,8 @@ before_install:
   - rosdep update --include-eol-distros  # Support EOL distros.
 
   # Prepare Statick.
-  - sudo apt-get install -y cccc clang-3.9 clang-format-3.9 clang-tidy-3.9 cppcheck flawfinder libxml2-utils maven pylint python-catkin-lint python-git python-yapsy python-yapsy python3-setuptools ros-$ROS_DISTRO-roslint uncrustify
-  - sudo pip install --upgrade statick --ignore-installed PyYAML
+  #- sudo apt-get install -y cccc clang-3.9 clang-format-3.9 clang-tidy-3.9 cppcheck flawfinder libxml2-utils maven pylint python-catkin-lint python-git python-yapsy python-yapsy python3-setuptools ros-$ROS_DISTRO-roslint uncrustify
+  #- sudo pip install --upgrade statick --ignore-installed PyYAML
 
 # Create a catkin workspace with the package under integration.
 install:
@@ -130,16 +130,16 @@ script:
   - catkin build $( [ -f $CATKIN_OPTIONS ] && cat $CATKIN_OPTIONS )
   - source devel/setup.bash
 
-  - mkdir statick-output
-  - cp /usr/local/lib/python2.7/dist-packages/statick_tool/rsc/.clang-format /home/travis
-  - statick src/lib_sonarcov --output-directory statick-output --user-paths ./src/lib_sonarcov/statick_config --clang-format-ignore-exception
+  #- mkdir statick-output
+  #- cp /usr/local/lib/python2.7/dist-packages/statick_tool/rsc/.clang-format /home/travis
+  #- statick src/lib_sonarcov --output-directory statick-output --user-paths ./src/lib_sonarcov/statick_config --clang-format-ignore-exception
 
   # Run the tests, ensuring the path is set correctly.
   - rm -rf build devel
   - catkin config --cmake-args -DCMAKE_CXX_FLAGS="-Wall -Wno-unused --coverage -fno-inline -fno-inline-small-functions -fno-default-inline" -DCMAKE_C_FLAGS="-Wall -Wno-unused --coverage -fno-inline -fno-inline-small-functions -fno-default-inline" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXE_LINKER_FLAGS="-lgcov"
   - catkin build
   - catkin run_tests -i && catkin_test_results
-  - cd src/lib_sonarcov
-  - codecov --gcov-root ~/catkin_ws/build/
+  #- cd src/lib_sonarcov
+  #- codecov --gcov-root ~/catkin_ws/build/
 after_success:
   - bash <(curl -s https://codecov.io/bash)
