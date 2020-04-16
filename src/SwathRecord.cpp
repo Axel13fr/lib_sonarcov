@@ -43,8 +43,6 @@ static double headingToRadians(double degval)
 
 EPoint SwathRecord::outerPoint(BoatSide side) const
 {
-    // Could have SwathRecord be a class with functions to return representation
-    // as a vector or point.
     double swath_width = 0;
     double rotate_degs = 0;
     if (side == BoatSide::Stbd) {
