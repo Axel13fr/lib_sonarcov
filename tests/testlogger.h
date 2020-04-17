@@ -47,7 +47,7 @@ public:
     {
       for (auto &p : line)
       {
-        m_fileStream << "NEXT_LINE," << p.x() << ',' << p.y() << std::endl;
+        m_fileStream << "NEXT_PATH," << p.x() << ',' << p.y() << std::endl;
       }
     }
 

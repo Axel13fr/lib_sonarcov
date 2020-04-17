@@ -8,3 +8,9 @@ catkin_add_gtest(pathPlan_test ./pathPlan_test.cpp ./testlogger.h WORKING_DIRECT
 target_link_libraries(pathPlan_test sonarcov ${catkin_LIBRARIES} )
 
 
+# So that the python file shows up in IDE
+FILE(GLOB_RECURSE OTHER_FILES
+    "./*.py"
+)
+
+add_custom_target(other_files SOURCES ${OTHER_FILES})
