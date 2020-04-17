@@ -63,7 +63,7 @@ using EPoint = Eigen::Vector2d;
 //
 //
 
-static double angleFromThreePoints(double x1, double y1,
+inline double angleFromThreePoints(double x1, double y1,
 			    double x2, double y2,
 			    double x3, double y3)
 { 
@@ -90,7 +90,7 @@ static double angleFromThreePoints(double x1, double y1,
 //
 //      Note: From Cormen, Leiserson, Rivest and Stein:
 
-static bool threePointTurnLeft(double x0, double y0,
+inline bool threePointTurnLeft(double x0, double y0,
 			double x1, double y1,
 			double x2, double y2)
 { 
@@ -114,7 +114,7 @@ static bool threePointTurnLeft(double x0, double y0,
 //---------------------------------------------------------------
 // Procedure: radAngleWrap
 
-static double radAngleWrap(double radval)
+inline double radAngleWrap(double radval)
 {
   if((radval <= M_PI) && (radval >= -M_PI))
     return(radval);
@@ -129,7 +129,7 @@ static double radAngleWrap(double radval)
 // Procedure: angle180
 //   Purpose: Convert angle to be strictly in the rang (-180, 180].
 
-static double angle180(double degval)
+inline double angle180(double degval)
 {
   while(degval > 180)
     degval -= 360.0;
@@ -142,7 +142,7 @@ static double angle180(double degval)
 // Procedure: angle360
 //   Purpose: Convert angle to be strictly in the rang [0, 360).
 
-static double angle360(double degval)
+inline double angle360(double degval)
 {
   while(degval >= 360.0)
     degval -= 360.0;
@@ -155,7 +155,7 @@ static double angle360(double degval)
 //---------------------------------------------------------------
 // Procedure: degToRadians
 
-static double degToRadians(double degval)
+inline double degToRadians(double degval)
 {
   return((degval/180.0) * M_PI);
 }
@@ -164,7 +164,7 @@ static double degToRadians(double degval)
 //---------------------------------------------------------------
 // Procedure: radToDegrees
 
-static double radToDegrees(double radval)
+inline double radToDegrees(double radval)
 {
   return((radval / M_PI) * 180);
 }
@@ -176,7 +176,7 @@ static double radToDegrees(double radval)
 // radians in a counterclockwize x(E) - y(N) coordinate system
 // .
 
-static double headingToRadians(double degval)
+inline double headingToRadians(double degval)
 {
   return(radAngleWrap( (90.0-degval)*M_PI/180.0));
 }
@@ -187,7 +187,7 @@ static double headingToRadians(double degval)
 // Converts radians in a counterclockwize x(E) - y(N) coordinate system
 // to true heading (clockwize from N).
 
-static double radToHeading(double radval)
+inline double radToHeading(double radval)
 {
   return(angle360( 90.0-(radval / M_PI) * 180));
 }
@@ -206,7 +206,7 @@ static double radToHeading(double radval)
 //                   |
 //                  180
 
-static double relAng(double xa, double ya, double xb, double yb)
+inline double relAng(double xa, double ya, double xb, double yb)
 {
   if((xa==xb)&&(ya==yb))
     return(0);
@@ -271,7 +271,7 @@ static double relAng(double xa, double ya, double xb, double yb)
 //                   |
 //                  180
 
-static double relAng(const EPoint& a, const EPoint& b)
+inline double relAng(const EPoint& a, const EPoint& b)
 {
   return(relAng(a.x(), a.y(), b.x(), b.y()));
 }
@@ -281,7 +281,7 @@ static double relAng(const EPoint& a, const EPoint& b)
 //   Purpose: Given a heading and speed of a vehicle, and another heading,
 //            determine the speed of the vehicle in that heading.
 
-static double speedInHeading(double osh, double osv, double heading)
+inline double speedInHeading(double osh, double osv, double heading)
 {
   // Part 0: handle simple special case
   if(osv == 0)
@@ -312,7 +312,7 @@ static double speedInHeading(double osh, double osv, double heading)
 //   Purpose: Determine the difference in angle degrees between 
 //            two given angles, ensuring the range [0, 180).
 
-static double angleDiff(double ang1, double ang2)
+inline double angleDiff(double ang1, double ang2)
 {
   ang1 = angle360(ang1);
   ang2 = angle360(ang2);
@@ -332,7 +332,7 @@ static double angleDiff(double ang1, double ang2)
 //   Purpose: Determine the difference in degrees between the two
 //            given aspect angles, ensuring the range [0, 90].
 
-static double aspectDiff(double ang1, double ang2)
+inline double aspectDiff(double ang1, double ang2)
 {
   double angle_diff_1 = angleDiff(ang1, ang2);
   double angle_diff_2 = angleDiff(ang1, ang2+180);
@@ -348,7 +348,7 @@ static double aspectDiff(double ang1, double ang2)
 //   Purpose: Given a range of angle, in the domain [0, 360),
 //            determine if the query angle lies within.
 
-static bool containsAngle(double aval, double bval, double qval)
+inline bool containsAngle(double aval, double bval, double qval)
 {
   // Convert to [0, 360) rather than assume.
   aval = angle360(aval);
@@ -378,7 +378,7 @@ static bool containsAngle(double aval, double bval, double qval)
 //            ownship positioned as osx,osy at a heading of osh.
 //   Returns: Value in the range [0,360).
 
-static double  relBearing(double osx, double osy, double osh, double cnx, double cny)
+inline double  relBearing(double osx, double osy, double osh, double cnx, double cny)
 {
   double angle_os_to_cn = relAng(osx, osy, cnx, cny);
   
@@ -397,7 +397,7 @@ static double  relBearing(double osx, double osy, double osh, double cnx, double
 //   Returns: Value in the range [0,180].
 
 
-static double absRelBearing(double osx, double osy, double osh, double cnx, double cny)
+inline double absRelBearing(double osx, double osy, double osh, double cnx, double cny)
 {
   double rel_bearing = relBearing(osx, osy, osh, cnx, cny);
   
@@ -413,7 +413,7 @@ static double absRelBearing(double osx, double osy, double osh, double cnx, doub
 //   Returns: Value in the range [0,360].
 
 
-static double totAbsRelBearing(double osx, double osy, double osh,
+inline double totAbsRelBearing(double osx, double osy, double osh,
 			double cnx, double cny, double cnh)
 {
   double abs_rel_bearing_os_cn = absRelBearing(osx, osy, osh, cnx, cny);
@@ -426,7 +426,7 @@ static double totAbsRelBearing(double osx, double osy, double osh,
 // Procedure: headingAvg()
 //   Purpose: Determine the average heading given a list of headings
 
-static double headingAvg(std::vector<double> heading_vals)
+inline double headingAvg(std::vector<double> heading_vals)
 {
   double ssum = 0.0;
   double csum = 0.0;
@@ -452,7 +452,7 @@ static double headingAvg(std::vector<double> heading_vals)
 //   Purpose: Determine the average heading given a two headings
 //      Note: Convenience function
 
-static double headingAvg(double h1, double h2)
+inline double headingAvg(double h1, double h2)
 {
   return (headingAvg(std::initializer_list<double>{h1,h2}));
 }

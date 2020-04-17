@@ -11,7 +11,7 @@ find_package(Eigen3 REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES lib_sonarcov
+  LIBRARIES sonarcov
 #  CATKIN_DEPENDS ros_cpp
 #  DEPENDS system_lib
 )
@@ -33,8 +33,8 @@ file(GLOB MANDA_SRC
 )
 
 
-add_library(lib_sonarcov SHARED ${MANDA_SRC})
-target_link_libraries(lib_sonarcov
+add_library(sonarcov SHARED ${MANDA_SRC})
+target_link_libraries(sonarcov
    ${catkin_LIBRARIES}
 )
 
@@ -48,7 +48,7 @@ install(DIRECTORY include/${PROJECT_NAME}/
   PATTERN ".svn" EXCLUDE
 )
 
-install(TARGETS lib_sonarcov
+install(TARGETS sonarcov
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -59,5 +59,5 @@ install(TARGETS lib_sonarcov
 ## Testing ##
 #############
 if(CATKIN_ENABLE_TESTING)
-  add_subdirectory(./unit_tests)
+  add_subdirectory(./tests)
 endif()

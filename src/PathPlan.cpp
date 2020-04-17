@@ -256,9 +256,10 @@ void PathPlan::RemoveBends(std::list<EPoint> &path_pts)
   std::copy(std::begin(path_pts), std::end(path_pts), std::back_inserter(v_pts));
   ROS_DEBUG_STREAM("Copied elements to vector, size = " << v_pts.size() << "\n");
 
-  SegIndex this_seg = {0, 1};
-  SegIndex next_seg = {1, 2};
-  SegIndex inc_seg = {0, 1};
+  // TODO: review this part
+  SegIndex this_seg = {{0, 1}};
+  SegIndex next_seg = {{1, 2}};
+  SegIndex inc_seg = {{0, 1}};
 
   std::size_t last_index = v_pts.size() - 1;
 

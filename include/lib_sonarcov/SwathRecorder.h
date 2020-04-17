@@ -30,7 +30,7 @@ class SwathRecorder
 {
 
 public:
-  SwathRecorder(double interval = 10);
+  explicit SwathRecorder(double interval = 10);
   /**
   * Adds a recorded swath to the path.
   * @param  swath_stbd Swath width to starboard
