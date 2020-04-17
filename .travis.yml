@@ -76,8 +76,6 @@ env:
 
 # Install system dependencies, namely a very barebones ROS setup.
 before_install:
-  # Code Coverage module
-  - sudo pip install --upgrade codecov
   # ROS
   - sudo sh -c "echo \"deb http://packages.ros.org/ros/ubuntu $ROS_CI_DESKTOP main\" > /etc/apt/sources.list.d/ros-latest.list"
   - sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
@@ -92,6 +90,9 @@ before_install:
   # Prepare Statick.
   #- sudo apt-get install -y cccc clang-3.9 clang-format-3.9 clang-tidy-3.9 cppcheck flawfinder libxml2-utils maven pylint python-catkin-lint python-git python-yapsy python-yapsy python3-setuptools ros-$ROS_DISTRO-roslint uncrustify
   #- sudo pip3 install --upgrade statick --ignore-installed PyYAML
+
+  # Code Coverage module
+  - python -m pip install --upgrade --user codecov==2.0.15
 
 # Create a catkin workspace with the package under integration.
 install:
@@ -150,4 +151,5 @@ after_success:
   - lcov --list coverage.info # debug info
   - cat coverage.info # for debug
   # Uploading report to CodeCov
-  - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+  - cd ~/catkin_ws/src/lib_sonarcov
+  - codecov --gcov-root ~/catkin_ws/build/
