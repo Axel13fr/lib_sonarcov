@@ -16,10 +16,16 @@
 #include <vector>
 #include <map>
 
-namespace scov{
-
+namespace scov
+{
 using EPoint = Eigen::Vector2d;
 using EPointVec = std::vector<EPoint>;
+
+struct OuterPoints
+{
+  EPoint port_pt;
+  EPoint stbd_pt;
+};
 
 /**
  * @class RecordSwath
@@ -28,47 +34,50 @@ using EPointVec = std::vector<EPoint>;
  */
 class SwathRecorder
 {
-
-public:
+ public:
   explicit SwathRecorder(double interval = 10);
   /**
-  * Adds a recorded swath to the path.
-  * @param  swath_stbd Swath width to starboard
-  * @param  swath_port Swath width to port
-  * @param  loc_x      X coordinate of position where record takes place
-  * @param  loc_y      Y coordinate of position
-  * @param  heading    Heading of the vessel at the time of recording
-  * @return            True if the record coverage was successfully added
-  */
-  bool AddRecord(const SwathRecord& r);
+   * Adds a recorded swath to the path.
+   * @param  swath_stbd Swath width to starboard
+   * @param  swath_port Swath width to port
+   * @param  loc_x      X coordinate of position where record takes place
+   * @param  loc_y      Y coordinate of position
+   * @param  heading    Heading of the vessel at the time of recording
+   * @return            True if the record coverage was successfully added
+   */
+  bool AddRecord(const SwathRecord &r);
   /**
-  * Resets the storage for a new line.
-  */
+   * Resets the storage for a new line.
+   */
   void ResetLine();
 
   /**
-  * Saves the last point to a record.
-  * This makes sure that the last swath (after crossing the boundary) is
-  * recorded so that it is included in planning.
-  * @return If the min_record is valid
-  */
+   * Saves the last point to a record.
+   * This makes sure that the last swath (after crossing the boundary) is
+   * recorded so that it is included in planning, even if inside the interval.
+   * @return If the min_record is valid
+   */
   bool SaveLast();
 
   /**
-  * Get all of the points on one side of the swath limits
-  * @param side   The side of the boat on which to return the swath
-  * @return       An ordered list of the points on the outside of the swath
-  */
+   * Get all of the min points (sub sampled by interval) on one side of the swath limits
+   * @param side   The side of the boat on which to return the swath
+   * @return       An ordered list of the min points on the outside of the swath
+   */
   EPointVec SwathOuterPts(BoatSide side);
 
-  std::pair<EPoint, EPoint> LastOuterPoints();
+  /**
+   * @brief LastOuterPoints
+   * @return returns the last outer points
+   */
+  OuterPoints LastOuterPoints();
 
   /**
-  * Gets a specific width along a recorded decimated swath
-  * @param  side  Side of the boat on which the swath was recorded
-  * @param  index Position of the desired swath
-  * @return       The swath width in meters
-  */
+   * Gets a specific width along a recorded decimated swath
+   * @param  side  Side of the boat on which the swath was recorded
+   * @param  index Position of the desired swath
+   * @return       The swath width in meters
+   */
   double SwathWidth(BoatSide side, size_t index);
 
   /**
@@ -86,20 +95,29 @@ public:
   EPoint SwathLocation(unsigned int index);
 
   /**
-  * Sets the side that will be used for outer point determination
-  * @param side Side of the boat on which to generate outer swath points
-  */
-  void SetOutputSide(BoatSide side) { m_output_side = side; }
+   * Sets the side that will be used for outer point determination
+   * @param side Side of the boat on which to generate outer swath points
+   */
+  void SetOutputSide(BoatSide side)
+  {
+    m_output_side = side;
+  }
 
   /**
    * Gets the side on which minimum interval points are being processed
    */
-  BoatSide GetOutputSide() {return m_output_side; }
+  BoatSide GetOutputSide()
+  {
+    return m_output_side;
+  }
 
   /**
    * The distance between subsequent analysis intervals for swath minimums.
    */
-  double IntervalDist() { return m_interval; }
+  double IntervalDist()
+  {
+    return m_interval;
+  }
 
   /**
    * Determines if the record has valid points for building a path.
@@ -117,17 +135,17 @@ public:
 
  private:
   /**
-  * Determines the minimum swath over the recorded interval and places it into
-  * a list of minimums.
-  */
+   * Determines the minimum swath over the recorded interval and places it into
+   * a list of minimums.
+   */
   void MinInterval();
 
   /**
-  * Adds a record to the coverage model.
-  * @param  record The record to add
-  * @return        Whether the record was able to be added sucessfully (no
-  * geometry errors).
-  */
+   * Adds a record to the coverage model.
+   * @param  record The record to add
+   * @return        Whether the record was able to be added sucessfully (no
+   * geometry errors).
+   */
   bool AddToCoverage(SwathRecord record);
 
   // Configuration Variables
@@ -148,6 +166,5 @@ public:
   SwathRecord m_previous_record;
   // side on which minimum interval points are being processed
   BoatSide m_output_side;
-
 };
-}
+}  // namespace scov

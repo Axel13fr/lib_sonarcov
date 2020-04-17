@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(lib_sonarcov)
 
 set(CMAKE_CXX_STANDARD 14)
-add_compile_options(-std=c++14 -Wall -Werror=return-type -fPIC -fext-numeric-literals)
+add_compile_options(-std=c++14 -Wall -Werror=return-type -fPIC)
 
 find_package(catkin REQUIRED COMPONENTS
     roscpp)

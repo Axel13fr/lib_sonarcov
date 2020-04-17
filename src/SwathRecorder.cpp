@@ -104,12 +104,14 @@ void SwathRecorder::MinInterval()
     if (m_interval_record.size() > min_index)
     {
         // Add the first point if this is the first interval in the record
+        // and the min is not that first point
         if (m_min_record.size() == 0 && min_index != 0)
         {
             ROS_DEBUG_STREAM_COND(DEBUG, "Saving First record of line\n");
             m_min_record.push_back(m_interval_record[0]);
         }
         m_min_record.push_back(m_interval_record[min_index]);
+
         // These are always cleared in the python version
         m_interval_record.clear();
         m_interval_swath.clear();
@@ -154,15 +156,15 @@ EPointVec SwathRecorder::SwathOuterPts(BoatSide side)
     return points;
 }
 
-std::pair<EPoint, EPoint> SwathRecorder::LastOuterPoints()
+OuterPoints SwathRecorder::LastOuterPoints()
 {
     if (m_has_records)
     {
         auto port_point = m_previous_record.outerPoint(BoatSide::Port);
         auto stbd_point = m_previous_record.outerPoint(BoatSide::Stbd);
-        return std::make_pair(port_point, stbd_point);
+        return {port_point, stbd_point};
     }
-    return std::make_pair(EPoint(), EPoint());
+    return {};
 }
 
 double SwathRecorder::SwathWidth(BoatSide side, size_t index)
