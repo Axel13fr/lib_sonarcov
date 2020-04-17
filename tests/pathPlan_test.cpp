@@ -179,7 +179,7 @@ TEST(PathPlan, CanGenerateNoisyPlan){
     h.translPosAdd(SPEED_MS * 1 / 3., 0, r);
   }
 
-  EXPECT_NEAR(r.swath_stbd, STBD_SWATH + 10, 0.001);
+  EXPECT_NEAR(r.swath_stbd, STBD_SWATH + 10, 3.);
 
   // Next 60meters, constant measurements
   for (uint i_secs = 1; i_secs <= 30; i_secs++)
@@ -191,7 +191,7 @@ TEST(PathPlan, CanGenerateNoisyPlan){
   }
 
   EXPECT_NEAR(r.loc_x, 140, 0.001);
-  EXPECT_NEAR(r.swath_stbd, 43, 0.001);
+  EXPECT_NEAR(r.swath_stbd, 43, 1.5);
 
   BPolygon opreg;
   boost::geometry::append(opreg.outer(), BPoint(1, 50));
