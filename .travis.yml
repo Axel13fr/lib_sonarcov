@@ -50,9 +50,9 @@ addons:
 language: generic
 matrix:
   include:
-  # - name: "Xenial kinetic"
-  #   dist: xenial
-  #   env: ROS_DISTRO=kinetic
+  - name: "Xenial kinetic"
+    dist: xenial
+    env: ROS_DISTRO=kinetic
   - name: "Bionic melodic"
     dist: bionic
     env: ROS_DISTRO=melodic    
@@ -135,7 +135,7 @@ script:
 
   - mkdir statick-output
   - cp ~/catkin_ws/src/lib_sonarcov/statick_config/rsc/_clang-format /home/travis/_clang-format
-  - statick src/lib_sonarcov --output-directory statick-output --user-paths src/lib_sonarcov/statick_config --clang-format-ignore-exception
+  #- statick src/lib_sonarcov --output-directory statick-output --user-paths src/lib_sonarcov/statick_config --clang-format-ignore-exception
 
   # Run the tests, ensuring the path is set correctly.
   - rm -rf build devel

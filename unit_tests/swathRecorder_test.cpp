@@ -13,7 +13,9 @@ TEST(SwathRecorder, CanAddRecord)
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 
   SwathRecord r{50., 100., 90., 35., 33., 16};
-  rec.AddRecord(r);
+  EXPECT_TRUE(rec.AddRecord(r));
+  // Reject same record
+  EXPECT_FALSE(rec.AddRecord(r));
   // First record is not directly added, only a start ref point
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 

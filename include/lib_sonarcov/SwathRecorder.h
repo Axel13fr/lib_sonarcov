@@ -134,15 +134,19 @@ public:
   double m_min_allowable_swath;
   double m_interval;
 
-  // State variables
+  // All records
   std::vector<SwathRecord> m_interval_record;
+  // Minimum record in terms of swath on a given side, over a distance interval
   std::vector<SwathRecord> m_min_record;
+  // Swath records over an interval
   std::map<BoatSide, std::vector<double>> m_interval_swath;
+
   double m_last_x;
   double m_last_y;
   bool m_has_records;
   double m_acc_dist;
   SwathRecord m_previous_record;
+  // side on which minimum interval points are being processed
   BoatSide m_output_side;
 
 };

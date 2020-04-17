@@ -47,6 +47,7 @@ bool SwathRecorder::AddRecord(const SwathRecord &r)
 
         ROS_DEBUG_STREAM_COND(DEBUG, "Accumulated distance: " + std::to_string(m_acc_dist) + "\n");
 
+        // Save minimum over interval
         if (m_acc_dist >= m_interval)
         {
             ROS_DEBUG_STREAM_COND(DEBUG, "Running MinInterval()\n");
@@ -91,12 +92,13 @@ void SwathRecorder::MinInterval()
     {
         throw std::runtime_error("Cannot find swath minimum without output side.");
     }
-    std::vector<double>* side_record = &m_interval_swath[m_output_side];
+    std::vector<double>& side_record = m_interval_swath[m_output_side];
 
     std::size_t min_index = 0;
-    if (side_record->size() > 0)
+    if (side_record.size() > 0)
     {
-        min_index = std::min_element(side_record->begin(), side_record->end()) - side_record->begin();
+      auto min_elm = std::min_element(side_record.begin(), side_record.end());
+      min_index = static_cast<size_t>(std::distance(side_record.begin(), min_elm));
     }
 
     if (m_interval_record.size() > min_index)
