@@ -49,36 +49,40 @@ def read_file(path):
         return [positions, swaths, next_line]
 
 
-LOG_FILE = 'PathPlannerOutput/CanGenerateSimplePlan.dbg'
-[POSITIONS, SWATHS, NEXT_PATH] = read_file(LOG_FILE)
-print("File reading over \nPositions: " + str(len(POSITIONS)) + "\nSwaths: "
-      + str(len(SWATHS)) + "\nNext line points: " +str(len(NEXT_PATH)))
+def plot_from_dbg_file(log_file_path):
+    [POSITIONS, SWATHS, NEXT_PATH] = read_file(log_file_path)
+    print("File reading over \nPositions: " + str(len(POSITIONS)) + "\nSwaths: "
+          + str(len(SWATHS)) + "\nNext line points: " + str(len(NEXT_PATH)))
 
-p_x = POSITIONS[:, 0]
-p_y = POSITIONS[:, 1]
-s_port_x = SWATHS[:, 0]
-s_port_y = SWATHS[:, 1]
-s_stbd_x = SWATHS[:, 2]
-s_stbd_y = SWATHS[:, 3]
-path_x = NEXT_PATH[:, 0]
-path_y = NEXT_PATH[:, 1]
+    p_x = POSITIONS[:, 0]
+    p_y = POSITIONS[:, 1]
+    s_port_x = SWATHS[:, 0]
+    s_port_y = SWATHS[:, 1]
+    s_stbd_x = SWATHS[:, 2]
+    s_stbd_y = SWATHS[:, 3]
+    path_x = NEXT_PATH[:, 0]
+    path_y = NEXT_PATH[:, 1]
 
-fig, axVector = plt.subplots()
-q = axVector.quiver(p_x, p_y, 0, 0, units='xy', scale=1,
-                    color='black', label="Position")
-p = axVector.quiver(s_port_x, s_port_y, 0, 0, units='xy', scale=1,
-                    color='red', alpha=0.6, label="Swath Port")
-g = axVector.quiver(s_stbd_x, s_stbd_y, 0, 0, units='xy', scale=1,
-                    color='green', alpha=0.6, label="Swath Starboard")
-n = axVector.quiver(path_x, path_y, 0, 0, units='xy', scale=1,
-                    color='blue', label="Next Path")
+    fig, axVector = plt.subplots()
+    q = axVector.quiver(p_x, p_y, 0, 0, units='xy', scale=1,
+                        color='black', label="Position")
+    p = axVector.quiver(s_port_x, s_port_y, 0, 0, units='xy', scale=1,
+                        color='red', alpha=0.6, label="Swath Port")
+    g = axVector.quiver(s_stbd_x, s_stbd_y, 0, 0, units='xy', scale=1,
+                        color='green', alpha=0.6, label="Swath Starboard")
+    n = axVector.quiver(path_x, path_y, 0, 0, units='xy', scale=1,
+                        color='blue', label="Next Path")
 
-plt.grid()
-plt.plot(path_x, path_y)
-axVector.set_aspect('equal')
-axVector.grid()
-axVector.legend()
-axVector.set_title('Trajectory tracking', fontsize=10)
+    plt.grid()
+    plt.plot(path_x, path_y)
+    axVector.set_aspect('equal')
+    axVector.grid()
+    axVector.legend()
+    axVector.set_title('Trajectory tracking', fontsize=10)
 
-plt.show()
-# plt.close()
+    plt.show()
+    # plt.close()
+
+plot_from_dbg_file('PathPlannerOutput/CanGenerateSimplePlan.dbg')
+plot_from_dbg_file('PathPlannerOutput/CanGenerateNoisyPlan.dbg')
+
