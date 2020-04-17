@@ -90,7 +90,7 @@ before_install:
   - python3 -m pip install --upgrade --user statick
 
   # Code Coverage module
-  - python -m pip install --upgrade --user codecov==2.0.15
+  - python -m pip install --upgrade --user codecov
 
 # Create a catkin workspace with the package under integration.
 install:
