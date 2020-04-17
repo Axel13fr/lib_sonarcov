@@ -37,6 +37,15 @@ using BRing = boost::geometry::model::ring<BPoint> ;
 class PathPlan
 {
   public:
+   /**
+     * @brief PathPlan
+     * @param last_swath sonar swath recorder
+     * @param side the side already covered (the one we will offset away from for next line)
+     * @param op_region the survey area
+     * @param margin
+     * @param max_bend_angle maximum angle between 2 consecutive segments generated
+     * @param restrict_to_region restrict the generated lines to the op region polygon
+     */
     PathPlan(const SwathRecorder &last_swath, BoatSide side, BPolygon op_region,
       double margin=0.2, double max_bend_angle=60, bool restrict_to_region = true);
     ~PathPlan() {}

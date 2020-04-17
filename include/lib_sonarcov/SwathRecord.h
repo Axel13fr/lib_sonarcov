@@ -24,6 +24,12 @@ enum class BoatSide
   Unknown
 };
 
+struct OuterPoints
+{
+  EPoint port_pt;
+  EPoint stbd_pt;
+};
+
 /**
  * @struct SwathRecord
  * @brief Stores the location and width of one measured sonar swath.
@@ -31,9 +37,9 @@ enum class BoatSide
 class SwathRecord
 {
  public:
-  double loc_x;  // X Sonar position in meters
-  double loc_y;  // Y Sonar position in meters
-  double heading;// Sonar heading, true heading (clockwise from N)
+  double loc_x;    // X Sonar position in meters
+  double loc_y;    // Y Sonar position in meters
+  double heading;  // Sonar heading, true heading (clockwise from N)
   // Could make this a map w/ BoatSide index
   double swath_stbd;
   double swath_port;
@@ -48,5 +54,13 @@ class SwathRecord
    * @return        Location of the swath outer points
    */
   EPoint outerPoint(BoatSide side) const;
+  /**
+   * @brief outerPoints
+   * @return both outher points into a struct
+   */
+  OuterPoints outerPoints() const
+  {
+    return {outerPoint(BoatSide::Port), outerPoint(BoatSide::Stbd)};
+  }
 };
 }  // namespace scov

@@ -160,9 +160,7 @@ OuterPoints SwathRecorder::LastOuterPoints()
 {
     if (m_has_records)
     {
-        auto port_point = m_previous_record.outerPoint(BoatSide::Port);
-        auto stbd_point = m_previous_record.outerPoint(BoatSide::Stbd);
-        return {port_point, stbd_point};
+      return m_previous_record.outerPoints();
     }
     return {};
 }

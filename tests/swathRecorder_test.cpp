@@ -13,6 +13,7 @@ TEST(SwathRecorder, CanAddRecord)
 {
   SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Port);
+  EXPECT_FALSE(rec.ValidRecord());
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 
   SwathRecord r{50., 100., 90., 35., 33., 16};
@@ -103,8 +104,10 @@ TEST(SwathRecorder, Getters)
   // Stbd point, absolute pos, from record r4
   EXPECT_EQ(rec.LastOuterPoints().stbd_pt.y(), 92);
 
-  EXPECT_EQ(rec.SwathWidth(BoatSide::Port,2),39);
-  EXPECT_EQ(rec.SwathLocation(2).x(),80);
+  EXPECT_EQ(rec.SwathWidth(BoatSide::Port, 2), 39);
+  EXPECT_EQ(rec.SwathLocation(2).x(), 80);
+
+  EXPECT_EQ(rec.AllSwathWidths(BoatSide::Stbd).size(),3);
 }
 
 int main(int argc, char **argv)

@@ -21,12 +21,6 @@ namespace scov
 using EPoint = Eigen::Vector2d;
 using EPointVec = std::vector<EPoint>;
 
-struct OuterPoints
-{
-  EPoint port_pt;
-  EPoint stbd_pt;
-};
-
 /**
  * @class RecordSwath
  * @brief Records points of a sonar swath for analysis of the coverage and
