@@ -82,7 +82,7 @@ TEST(PathPlan, CanGenerateSimplePlan)
   SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Stbd);
 
-  SurveyHelper h(l,rec);
+  SurveyHelper h(l, rec);
 
   SwathRecord r{0, 0, 90., STBD_SWATH, PORT_SWATH, 16};
   // Initial pos
@@ -129,18 +129,41 @@ TEST(PathPlan, CanGenerateSimplePlan)
   BPolygon opreg;
   boost::geometry::append(opreg.outer(), BPoint(1, 50));
   boost::geometry::append(opreg.outer(), BPoint(130, 50));
-  boost::geometry::append(opreg.outer(), BPoint(130, -150));
-  boost::geometry::append(opreg.outer(), BPoint(1, -150));
+  boost::geometry::append(opreg.outer(), BPoint(130, -100));
+  boost::geometry::append(opreg.outer(), BPoint(1, -100));
   boost::geometry::append(opreg.outer(), BPoint(1, 50));
   boost::geometry::validity_failure_type failure;
   EXPECT_TRUE(boost::geometry::is_valid(opreg, failure));
+  l.logSurveyRegion(opreg);
 
   PathPlan plan(rec, BoatSide::Stbd, opreg);
+  l.registerPathPlanLogs(plan);
   auto nextPath = plan.GenerateNextPath();
-  l.logNextLine(nextPath);
 }
 
-TEST(PathPlan, CanGenerateNoisyPlan){
+
+/**
+ Op Area
+    +----------------------------------------------------+
+    |     Boat Trajectory                                |
+    | +------------------------------------------------------+
+    |                                                    |
+    |                                                    |
+    |                                                    |
+    |   Sonar Swath on Starboard Side                    |
+    |             with NOISE(not shown here)             |
+    |   +--------------------+                           |
+    |                         +                          |
+    |                          +----------------------+  |
+    |                                                    |
+    |                                                    |
+    |                                                    |
+    |                                                    |
+    |                                                    |
+    +----------------------------------------------------+
+**/
+TEST(PathPlan, CanGenerateNoisyPlan)
+{
   TestLogger l;
 
   const auto STBD_SWATH = 33.;
@@ -149,7 +172,7 @@ TEST(PathPlan, CanGenerateNoisyPlan){
   SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Stbd);
 
-  SurveyHelper h(l,rec,.5);
+  SurveyHelper h(l, rec, 3);
 
   SwathRecord r{0, 0, 90., STBD_SWATH, PORT_SWATH, 16};
   // Initial pos
@@ -196,15 +219,16 @@ TEST(PathPlan, CanGenerateNoisyPlan){
   BPolygon opreg;
   boost::geometry::append(opreg.outer(), BPoint(1, 50));
   boost::geometry::append(opreg.outer(), BPoint(130, 50));
-  boost::geometry::append(opreg.outer(), BPoint(130, -150));
-  boost::geometry::append(opreg.outer(), BPoint(1, -150));
+  boost::geometry::append(opreg.outer(), BPoint(130, -100));
+  boost::geometry::append(opreg.outer(), BPoint(1, -100));
   boost::geometry::append(opreg.outer(), BPoint(1, 50));
   boost::geometry::validity_failure_type failure;
   EXPECT_TRUE(boost::geometry::is_valid(opreg, failure));
+  l.logSurveyRegion(opreg);
 
   PathPlan plan(rec, BoatSide::Stbd, opreg);
+  l.registerPathPlanLogs(plan);
   auto nextPath = plan.GenerateNextPath();
-  l.logNextLine(nextPath);
 }
 
 int main(int argc, char **argv)

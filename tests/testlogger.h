@@ -5,6 +5,7 @@
 #include <list>
 #include "gtest/gtest.h"
 #include "lib_sonarcov/SwathRecord.h"
+#include "lib_sonarcov/PathPlan.h"
 
 
 using namespace scov;
@@ -21,6 +22,13 @@ public:
     {
         //tracker.registerKalmanUpdateCb([&](KalmanFilter &kalman, bool new_track) { this->logCb(kalman, new_track); });
     }
+
+    void registerPathPlanLogs(PathPlan &planner)
+    {
+      planner.registerPathCb(
+          [&](const std::string &name, const std::list<Eigen::Vector2d> &path) { this->logPath(name, path); });
+    }
+
     static constexpr auto OUTPUT_PATH = "tests/PathPlannerOutput";
     static std::string get_output_file_name()
     {
@@ -41,6 +49,24 @@ public:
                    << stbd.x() << ','
                    << stbd.y()
                    << std::endl;
+    }
+
+    void logPath(const std::string& name,const std::list<Eigen::Vector2d>& path){
+      for(const auto& pt : path){
+        m_fileStream << name << ','
+                     << pt.x()  << ','
+                     << pt.y()
+                     << std::endl;
+      }
+    }
+
+    void logSurveyRegion(const BPolygon& opreg){
+      for (const auto& pt: opreg.outer()) {
+        m_fileStream << "SURVEY_REGION"<< ','
+                     << pt.x()  << ','
+                     << pt.y()
+                     << std::endl;
+      }
     }
 
     void logNextLine(const std::list<EPoint> line)

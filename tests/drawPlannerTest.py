@@ -2,12 +2,8 @@
 # -*- coding: utf-8 -*-
 from builtins import list
 
-import matplotlib
-
-matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
-import math
 
 
 def read_swath_record(line):
@@ -23,36 +19,59 @@ def shortest_angle(x, y):
     return np.arctan2(np.sin(x - y), np.cos(x - y))
 
 
-def read_file(path):
-    positions = []
-    swaths = []
-    next_line = []
+class Logs:
+    def __init__(self):
+        self.positions = []
+        self.swaths = []
+        self.next_line = []
+        self.raw_path = []
+        self.no_intersect_path = []
+        self.no_bends_path = []
+        self.survey_region = []
 
-    with open(path) as fp:
-        line = fp.readline()
-        while line:
-            if line.startswith("SWATH"):
-                [pos_x, pos_y, swath_port_x, swath_port_y, swath_stbd_x, swath_stbd_y] = read_swath_record(line)
-                positions.append(np.array([pos_x, pos_y]))
-                swaths.append(np.array([swath_port_x, swath_port_y, swath_stbd_x, swath_stbd_y]))
+    def toNpArrays(self):
+        self.positions = np.asarray(self.positions)
+        self.swaths = np.asarray(self.swaths)
+        self.next_line = np.asarray(self.next_line)
+        self.raw_path = np.asarray(self.raw_path)
+        self.no_intersect_path = np.asarray(self.no_intersect_path)
+        self.no_bends_path = np.asarray(self.no_bends_path)
+        self.survey_region = np.asarray(self.survey_region)
 
-            if line.startswith("NEXT_PATH"):
-                [x, y] = read_path(line)
-                next_line.append(np.array([x, y]))
+    def log_point_entry(self, line, name, array):
+        if line.startswith(name):
+            [x, y] = read_path(line)
+            array.append(np.array([x, y]))
 
+    def read_file(self, path):
+
+        with open(path) as fp:
             line = fp.readline()
+            while line:
+                if line.startswith("SWATH"):
+                    [pos_x, pos_y, swath_port_x, swath_port_y, swath_stbd_x, swath_stbd_y] = read_swath_record(line)
+                    self.positions.append(np.array([pos_x, pos_y]))
+                    self.swaths.append(np.array([swath_port_x, swath_port_y, swath_stbd_x, swath_stbd_y]))
+                else:
+                    self.log_point_entry(line, "NEXT_LINE", self.next_line)
+                    self.log_point_entry(line, "RAW_PATH", self.raw_path)
+                    self.log_point_entry(line, "NO_INTERSECT_PATH", self.no_intersect_path)
+                    self.log_point_entry(line, "NO_BENDS_PATH", self.no_bends_path)
+                    self.log_point_entry(line, "SURVEY_REGION", self.survey_region)
 
-        positions = np.asarray(positions)
-        swaths = np.asarray(swaths)
-        next_line = np.asarray(next_line)
+                line = fp.readline()
 
-        return [positions, swaths, next_line]
+            self.toNpArrays()
 
 
 def plot_from_dbg_file(log_file_path):
-    [POSITIONS, SWATHS, NEXT_PATH] = read_file(log_file_path)
+    l = Logs()
+    l.read_file(log_file_path)
+    [POSITIONS, SWATHS, RAW_PATH, NO_INTERSECT, NO_BENDS, NEXT_PATH, SURVEY_OP] = \
+        [l.positions, l.swaths, l.raw_path, l.no_intersect_path, l.no_bends_path, l.next_line, l.survey_region]
     print("File reading over \nPositions: " + str(len(POSITIONS)) + "\nSwaths: "
-          + str(len(SWATHS)) + "\nNext line points: " + str(len(NEXT_PATH)))
+          + str(len(SWATHS)) + "\nRaw path points: " + str(len(RAW_PATH)) + "\nNext line points: " + str(len(NEXT_PATH))
+          + "\nSurvey Area: " + str(len(SURVEY_OP)))
 
     p_x = POSITIONS[:, 0]
     p_y = POSITIONS[:, 1]
@@ -60,21 +79,36 @@ def plot_from_dbg_file(log_file_path):
     s_port_y = SWATHS[:, 1]
     s_stbd_x = SWATHS[:, 2]
     s_stbd_y = SWATHS[:, 3]
+    raw_path_x = RAW_PATH[:, 0]
+    raw_path_y = RAW_PATH[:, 1]
+    no_intersect_x = NO_INTERSECT[:, 0]
+    no_intersect_y = NO_INTERSECT[:, 1]
+    survey_reg_x = SURVEY_OP[:, 0]
+    survey_reg_y = SURVEY_OP[:, 1]
     path_x = NEXT_PATH[:, 0]
     path_y = NEXT_PATH[:, 1]
 
     fig, axVector = plt.subplots()
-    q = axVector.quiver(p_x, p_y, 0, 0, units='xy', scale=1,
+    axVector.quiver(p_x, p_y, 0, 0, units='xy', scale=1,
                         color='black', label="Position")
-    p = axVector.quiver(s_port_x, s_port_y, 0, 0, units='xy', scale=1,
+    axVector.quiver(s_port_x, s_port_y, 0, 0, units='xy', scale=1,
                         color='red', alpha=0.6, label="Swath Port")
-    g = axVector.quiver(s_stbd_x, s_stbd_y, 0, 0, units='xy', scale=1,
+    axVector.quiver(s_stbd_x, s_stbd_y, 0, 0, units='xy', scale=1,
                         color='green', alpha=0.6, label="Swath Starboard")
-    n = axVector.quiver(path_x, path_y, 0, 0, units='xy', scale=1,
+    axVector.quiver(raw_path_x, raw_path_y, 0, 0, units='xy', scale=1,
+                        color='lightcoral',  alpha=0.6, label="Raw Path")
+    axVector.quiver(no_intersect_x, no_intersect_y, 0, 0, units='xy', scale=1,
+                        color='darkorange',  alpha=0.6, label="No Intersect Path")
+    axVector.quiver(path_x, path_y, 0, 0, units='xy', scale=1,
                         color='blue', label="Next Path")
 
     plt.grid()
+    #plt.plot(survey_reg_x, survey_reg_y, color='black', alpha=0.6)
+    plt.plot(raw_path_x, raw_path_y, color='coral', alpha=0.6)
+    plt.plot(no_intersect_x, no_intersect_y, color='darkorange', alpha=0.6)
     plt.plot(path_x, path_y)
+    plt.plot(no_intersect_x, no_intersect_y, color='darkorange', alpha=0.6)
+
     axVector.set_aspect('equal')
     axVector.grid()
     axVector.legend()

@@ -117,6 +117,7 @@ PathList PathPlan::GenerateNextPath()
   if (all_zero)
   {
     ROS_DEBUG_STREAM_COND(DEBUG, "Reached end of path by depth threshold\n");
+    //notifyPath("NEXT_LINE", m_next_path_pts);
     return PathList();
   }
 
@@ -124,10 +125,13 @@ PathList PathPlan::GenerateNextPath()
   m_next_path_pts.reverse();
   m_raw_path = m_next_path_pts;
 
+  notifyPath("RAW_PATH", m_raw_path);
+
   // ---------- Intersections -----------
   size_t pre_len = m_next_path_pts.size();
   ROS_DEBUG_STREAM_COND(DEBUG, "Eliminating path intersects itself.\n");
   RemoveAll(RemoveIntersects, m_next_path_pts);
+  notifyPath("NO_INTERSECT_PATH", m_next_path_pts);
 
   ROS_DEBUG_COND(DEBUG, "Removed %ld points.\n", pre_len - m_next_path_pts.size());
   pre_len = m_next_path_pts.size();
@@ -139,6 +143,7 @@ PathList PathPlan::GenerateNextPath()
 
   std::function<void(std::list<EPoint> &)> remove_func = std::bind(&PathPlan::RemoveBends, this, std::placeholders::_1);
   RemoveAll(remove_func, m_next_path_pts);
+  notifyPath("NO_BENDS_PATH", m_next_path_pts);
 
   ROS_DEBUG_COND(DEBUG, "Removed %ld points.\n", pre_len - m_next_path_pts.size());
   pre_len = m_next_path_pts.size();
@@ -159,6 +164,7 @@ PathList PathPlan::GenerateNextPath()
 
     if (pre_len <= 1)
     {
+      notifyPath("NEXT_LINE", m_next_path_pts);
       return m_next_path_pts;
     }
   }
@@ -176,6 +182,7 @@ PathList PathPlan::GenerateNextPath()
   ROS_DEBUG_COND(DEBUG, "Removed %ld points.\n", pre_len - m_next_path_pts.size());
   pre_len = m_next_path_pts.size();
 
+  notifyPath("NEXT_LINE", m_next_path_pts);
   return m_next_path_pts;
 }
 

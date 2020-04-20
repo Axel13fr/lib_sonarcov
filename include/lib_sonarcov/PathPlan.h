@@ -216,7 +216,27 @@ class PathPlan
       }
     }
 
-  private:
+    // -------------------------------------------------------------------------------
+    // Debug interface
+    // -------------------------------------------------------------------------------
+
+    /**
+     * @brief registerPathCb
+     * @param f the callback function to notify a path and its name
+     */
+    void registerPathCb(std::function<void(const std::string &name, const std::list<Eigen::Vector2d> &path)> f)
+    {
+      m_pathDbgCb = f;
+    }
+
+   private:
+    inline void notifyPath(const std::string &name, const std::list<Eigen::Vector2d> &path)
+    {
+      if (m_pathDbgCb)
+      {
+        m_pathDbgCb(name, path);
+      }
+    }
 
     // Configuration variables
     bool m_restrict_asv_to_region;
@@ -229,6 +249,9 @@ class PathPlan
     BoatSide m_planning_side;
     std::list<Eigen::Vector2d> m_next_path_pts;
     PathList m_raw_path;
+
+    // Callback for debug purposes
+    std::function<void(const std::string& name,const std::list<Eigen::Vector2d>& path)>m_pathDbgCb;
 };
 
 }
