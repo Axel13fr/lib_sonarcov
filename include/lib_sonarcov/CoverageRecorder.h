@@ -57,14 +57,14 @@ class CoverageRecorder
    * @param min_ping_per_cell Minimum number of measurements per cell to consider it covered
    * @return the coverage of the operation region in percents [0;100]
    */
-  CoverageResult getCoveragePercent(const BPolygon &op_region, uint min_ping_per_cell =0);
+  CoverageResult getCoveragePercent(const BPolygon &op_region, uint min_ping_per_cell =0) const;
 
   /**
    * @brief getCoverageGrid
    * @return the grid map containing coverage information
    * The different layers can be accessed via the const defined below
    */
-  const grid_map::GridMap &getCoverageGrid()
+  const grid_map::GridMap &getCoverageGrid() const
   {
     return m_gridMap;
   }

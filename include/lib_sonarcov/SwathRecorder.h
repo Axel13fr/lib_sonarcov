@@ -142,6 +142,21 @@ class SwathRecorder
    * geometry errors).
    */
   bool AddToCoverage(const SwathRecord& record);
+  /**
+   * @brief AddToCoverage
+   * @param ptcld sonar point cloud to add for coverage calculation
+   * @return
+   */
+  bool AddToCoverage(const sensor_msgs::PointCloudConstPtr &ptcld);
+
+  /**
+   * @brief GetCoverage
+   * @return Coverage recorder to access results and gridmap
+   */
+  const CoverageRecorder GetCoverage() const
+  {
+    return m_covRec;
+  }
 
   // Configuration Variables
   double m_min_allowable_swath;

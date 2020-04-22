@@ -85,6 +85,11 @@ bool SwathRecorder::AddToCoverage(const SwathRecord& record)
     return true;
 }
 
+bool SwathRecorder::AddToCoverage(const sensor_msgs::PointCloudConstPtr &ptcld)
+{
+  return m_covRec.addPointCloudToCoverage(ptcld);
+}
+
 void SwathRecorder::MinInterval()
 {
     // Get the record from the side we are offsetting

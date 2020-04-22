@@ -70,7 +70,7 @@ bool CoverageRecorder::addPointCloudToCoverage(sensor_msgs::PointCloudConstPtr p
   return true;
 }
 
-CoverageResult CoverageRecorder::getCoveragePercent(const BPolygon &op_region, uint min_ping_per_cell)
+CoverageResult CoverageRecorder::getCoveragePercent(const BPolygon &op_region, uint min_ping_per_cell) const
 {
   // Convert to gridmap polygon
   grid_map::Polygon poly;
