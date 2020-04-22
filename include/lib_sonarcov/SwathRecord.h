@@ -37,10 +37,11 @@ struct OuterPoints
 class SwathRecord
 {
  public:
+  // Sonar position in world coordinates
   double loc_x;    // X Sonar position in meters
   double loc_y;    // Y Sonar position in meters
   double heading;  // Sonar heading, true heading (clockwise from N)
-  // Could make this a map w/ BoatSide index
+  // Swath distances relative the sonar position
   double swath_stbd;
   double swath_port;
   // This will either be the nadir depth (if this is all we have) or outer

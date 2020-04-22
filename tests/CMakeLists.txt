@@ -7,6 +7,9 @@ target_link_libraries(swathRecorder_test sonarcov ${catkin_LIBRARIES} )
 catkin_add_gtest(pathPlan_test ./pathPlan_test.cpp ./testlogger.h WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 target_link_libraries(pathPlan_test sonarcov ${catkin_LIBRARIES} )
 
+catkin_add_gtest(covRec_test ./covRec_test.cpp WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+target_link_libraries(covRec_test sonarcov ${catkin_LIBRARIES} )
+
 
 # So that the python file shows up in IDE
 FILE(GLOB_RECURSE OTHER_FILES

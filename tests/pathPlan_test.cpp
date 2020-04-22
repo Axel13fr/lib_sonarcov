@@ -13,6 +13,8 @@
 using ::testing::_;
 using namespace scov;
 
+static coverageParams param;
+
 class SurveyHelper
 {
  public:
@@ -31,6 +33,7 @@ class SurveyHelper
 
     r.loc_x += dx;
     r.loc_y += dy;
+    // Add noise to swath record
     auto noisePort = d(gen);
     auto noiseStbd = d(gen);
     r.swath_port += noisePort;
@@ -79,7 +82,7 @@ TEST(PathPlan, CanGenerateSimplePlan)
   const auto STBD_SWATH = 33.;
   const auto PORT_SWATH = 32.;
   const auto SPEED_MS = 2.;
-  SwathRecorder rec;
+  SwathRecorder rec(param);
   rec.SetOutputSide(BoatSide::Stbd);
 
   SurveyHelper h(l, rec);
@@ -169,7 +172,7 @@ TEST(PathPlan, CanGenerateNoisyPlan)
   const auto STBD_SWATH = 33.;
   const auto PORT_SWATH = 32.;
   const auto SPEED_MS = 2.;
-  SwathRecorder rec;
+  SwathRecorder rec(param);
   rec.SetOutputSide(BoatSide::Stbd);
 
   SurveyHelper h(l, rec, 3);
@@ -190,7 +193,7 @@ TEST(PathPlan, CanGenerateNoisyPlan)
   // We are at x = 60m
   EXPECT_NEAR(r.loc_x, 60., 0.001);
 
-  // Next 20meters, swath Stbd increasing
+  // Next 10meters, swath Stbd increasing
   for (uint i_secs = 1; i_secs <= 10; i_secs++)
   {
     // 3 sonar measurements per sec
@@ -202,8 +205,6 @@ TEST(PathPlan, CanGenerateNoisyPlan)
     h.translPosAdd(SPEED_MS * 1 / 3., 0, r);
   }
 
-  EXPECT_NEAR(r.swath_stbd, STBD_SWATH + 10, 3.);
-
   // Next 60meters, constant measurements
   for (uint i_secs = 1; i_secs <= 30; i_secs++)
   {
@@ -214,7 +215,6 @@ TEST(PathPlan, CanGenerateNoisyPlan)
   }
 
   EXPECT_NEAR(r.loc_x, 140, 0.001);
-  EXPECT_NEAR(r.swath_stbd, 43, 1.5);
 
   BPolygon opreg;
   boost::geometry::append(opreg.outer(), BPoint(1, 50));
@@ -236,7 +236,7 @@ int main(int argc, char **argv)
   // ROS logs in unit tests
   ROSCONSOLE_AUTOINIT;
   log4cxx::LoggerPtr my_logger = log4cxx::Logger::getLogger(ROSCONSOLE_DEFAULT_NAME);
-  my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
+  //my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
 
   // The following line must be executed to initialize Google Mock
   // (and Google Test) before running the tests.

@@ -9,9 +9,12 @@
 using ::testing::_;
 using namespace scov;
 
+// Use default coverage parameters
+static coverageParams p;
+
 TEST(SwathRecorder, CanAddRecord)
 {
-  SwathRecorder rec;
+  SwathRecorder rec(p);
   rec.SetOutputSide(BoatSide::Port);
   EXPECT_FALSE(rec.ValidRecord());
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
@@ -45,7 +48,7 @@ TEST(SwathRecorder, CanAddRecord)
 
 TEST(SwathRecorder, CanReset)
 {
-  SwathRecorder rec;
+  SwathRecorder rec(p);
   rec.SetOutputSide(BoatSide::Port);
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 
@@ -63,7 +66,7 @@ TEST(SwathRecorder, CanReset)
 
 TEST(SwathRecorder, CanSaveLast)
 {
-  SwathRecorder rec;
+  SwathRecorder rec(p);
   rec.SetOutputSide(BoatSide::Port);
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 
@@ -87,7 +90,7 @@ TEST(SwathRecorder, CanSaveLast)
 
 TEST(SwathRecorder, Getters)
 {
-  SwathRecorder rec;
+  SwathRecorder rec(p);
   rec.SetOutputSide(BoatSide::Port);
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 
@@ -115,10 +118,10 @@ int main(int argc, char **argv)
   // ROS logs in unit tests
   ROSCONSOLE_AUTOINIT;
   log4cxx::LoggerPtr my_logger = log4cxx::Logger::getLogger(ROSCONSOLE_DEFAULT_NAME);
-  my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
+  //my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
+
   // The following line must be executed to initialize Google Mock
   // (and Google Test) before running the tests.
-
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

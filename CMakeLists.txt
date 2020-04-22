@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 add_compile_options(-std=c++14 -Wall -Werror=return-type -fext-numeric-literals)
 
 find_package(catkin REQUIRED COMPONENTS
-    roscpp)
+    roscpp grid_map_core sensor_msgs)
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 

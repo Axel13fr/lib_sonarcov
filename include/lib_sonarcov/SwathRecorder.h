@@ -10,6 +10,7 @@
 #pragma once
 
 #include "SwathRecord.h"
+#include "CoverageRecorder.h"
 
 #include <eigen3/Eigen/Core>
 #include <list>
@@ -29,7 +30,7 @@ using EPointVec = std::vector<EPoint>;
 class SwathRecorder
 {
  public:
-  explicit SwathRecorder(double interval = 10);
+  explicit SwathRecorder(const coverageParams &param, double interval = 10);
   /**
    * Adds a recorded swath to the path.
    * @param  swath_stbd Swath width to starboard
@@ -140,7 +141,7 @@ class SwathRecorder
    * @return        Whether the record was able to be added sucessfully (no
    * geometry errors).
    */
-  bool AddToCoverage(SwathRecord record);
+  bool AddToCoverage(const SwathRecord& record);
 
   // Configuration Variables
   double m_min_allowable_swath;
@@ -160,5 +161,7 @@ class SwathRecorder
   SwathRecord m_previous_record;
   // side on which minimum interval points are being processed
   BoatSide m_output_side;
+
+  CoverageRecorder m_covRec;
 };
 }  // namespace scov
