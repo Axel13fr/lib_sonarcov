@@ -77,6 +77,10 @@ TEST(CoverageRecorder, CanDoRayBasedCoverage)
   BPolygon opreg = getSquareOpRegion(50);
 
   EXPECT_EQ(rec.getCoveragePercent(opreg).ray_based_percent, 50.);
+
+  // Test clear function
+  rec.clear();
+  EXPECT_EQ(rec.getCoveragePercent(opreg).ray_based_percent, 0.);
 }
 
 TEST(CoverageRecorder, CanDoPointBasedCoverage)

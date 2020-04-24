@@ -1,6 +1,7 @@
 #include <lib_sonarcov/CoverageRecorder.h>
 #include <grid_map_core/iterators/LineIterator.hpp>
 #include <grid_map_core/iterators/PolygonIterator.hpp>
+#include <pcl_conversions/pcl_conversions.h>
 #include <ros/console.h>
 
 using namespace scov;
@@ -16,6 +17,11 @@ CoverageRecorder::CoverageRecorder(CoverageParams param, const std::string &worl
 
   ROS_INFO("Created map with size %f x %f m (%i x %i cells) located at ( %f , %f ).", m_gridMap.getLength().x(),
            m_gridMap.getLength().y(), m_gridMap.getSize()(0), m_gridMap.getSize()(1), p.x(), p.y());
+}
+
+void CoverageRecorder::clear()
+{
+  m_gridMap.clearAll();
 }
 
 void CoverageRecorder::addRecordToCoverage(const SwathRecord &rec)
@@ -55,15 +61,42 @@ bool CoverageRecorder::addPointCloudToCoverage(const sensor_msgs::PointCloud& pc
   for (const auto &pt : pcld.points)
   {
     cell_cnt++;
-    auto &elm = m_gridMap.atPosition(POINT_CLOUD_BASED_COVERAGE, grid_map::Position(pt.x, pt.y));
-    if (std::isnan(elm))
-    {
-      elm = 1.f;
-    }
-    else
-    {
-      elm += 1.f;
-    }
+    addPointToGrid({pt.x, pt.y});
+  }
+
+  ROS_DEBUG_STREAM("New pt Cloud covered " << cell_cnt << " cells.");
+  return true;
+}
+
+void CoverageRecorder::addPointToGrid(const grid_map::Position& pt)
+{
+  auto &elm = m_gridMap.atPosition(POINT_CLOUD_BASED_COVERAGE, pt);
+  if (std::isnan(elm))
+  {
+    elm = 1.f;
+  }
+  else
+  {
+    elm += 1.f;
+  }
+}
+
+bool CoverageRecorder::addPointCloudToCoverage(const sensor_msgs::PointCloud2 &pcld)
+{
+  if (pcld.header.frame_id != m_worldFrameId)
+  {
+    return false;
+  }
+
+  pcl::PointCloud<pcl::PointXYZ> worldCld;
+  pcl::fromROSMsg(pcld, worldCld);
+
+  auto cell_cnt = 0;
+  // Increment the cell where each point of the cloud falls
+  for (const auto &pt : worldCld.points)
+  {
+    cell_cnt++;
+    addPointToGrid({pt.x,pt.y});
   }
 
   ROS_DEBUG_STREAM("New pt Cloud covered " << cell_cnt << " cells.");

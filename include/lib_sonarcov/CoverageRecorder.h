@@ -3,6 +3,7 @@
 #include "lib_sonarcov/SwathRecord.h"
 
 #include <sensor_msgs/PointCloud.h>
+#include <sensor_msgs/PointCloud2.h>
 #include <grid_map_core/GridMap.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/geometries.hpp>
@@ -37,6 +38,8 @@ class CoverageRecorder
  public:
   CoverageRecorder(CoverageParams param, const std::string &world_frame_id = "world");
 
+  void clear();
+
   /**
    * @brief addRecordToCoverage
    * @param rec A swath record containing the sonar position in world coordinates
@@ -50,6 +53,7 @@ class CoverageRecorder
    * @return false if point cloud is not in world coordinates
    */
   bool addPointCloudToCoverage(const sensor_msgs::PointCloud &pcld);
+  bool addPointCloudToCoverage(const sensor_msgs::PointCloud2 &pcld);
 
   /**
    * @brief getCoveragePercent
@@ -75,6 +79,7 @@ class CoverageRecorder
  private:
   grid_map::GridMap m_gridMap;
   std::string m_worldFrameId = "world";
+  void addPointToGrid(const grid_map::Position &pt);
 };
 
 }  // namespace scov
