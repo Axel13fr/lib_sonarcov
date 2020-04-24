@@ -20,11 +20,10 @@ static constexpr auto TURN_THRESHOLD = 20;
 //---------------------------------------------------------
 // Constructor
 
-SwathRecorder::SwathRecorder(const coverageParams& param, double interval) : m_min_allowable_swath(0),m_interval(interval),
+SwathRecorder::SwathRecorder(double interval) : m_min_allowable_swath(0),m_interval(interval),
                          m_has_records(false), m_acc_dist(0),
                          m_previous_record{0, 0, 0, 0, 0, 0},
-                         m_output_side(BoatSide::Unknown),
-                         m_covRec(param)
+                         m_output_side(BoatSide::Unknown)
 {
     // Initialize the point records
     m_interval_swath[BoatSide::Port] = std::vector<double>();
@@ -75,19 +74,7 @@ bool SwathRecorder::AddRecord(const SwathRecord &r)
     m_has_records = true;
     m_previous_record = r;
 
-    // Add progressively to the coverage model
-    return AddToCoverage(r);
-}
-
-bool SwathRecorder::AddToCoverage(const SwathRecord& record)
-{
-    m_covRec.addRecordToCoverage(record);
     return true;
-}
-
-bool SwathRecorder::AddToCoverage(const sensor_msgs::PointCloudConstPtr &ptcld)
-{
-  return m_covRec.addPointCloudToCoverage(ptcld);
 }
 
 void SwathRecorder::MinInterval()

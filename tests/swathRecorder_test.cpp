@@ -9,12 +9,9 @@
 using ::testing::_;
 using namespace scov;
 
-// Use default coverage parameters
-static coverageParams p;
-
 TEST(SwathRecorder, CanAddRecord)
 {
-  SwathRecorder rec(p);
+  SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Port);
   EXPECT_FALSE(rec.ValidRecord());
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
@@ -48,7 +45,7 @@ TEST(SwathRecorder, CanAddRecord)
 
 TEST(SwathRecorder, CanReset)
 {
-  SwathRecorder rec(p);
+  SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Port);
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 
@@ -66,7 +63,7 @@ TEST(SwathRecorder, CanReset)
 
 TEST(SwathRecorder, CanSaveLast)
 {
-  SwathRecorder rec(p);
+  SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Port);
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 
@@ -90,7 +87,7 @@ TEST(SwathRecorder, CanSaveLast)
 
 TEST(SwathRecorder, Getters)
 {
-  SwathRecorder rec(p);
+  SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Port);
   EXPECT_TRUE(rec.SwathOuterPts(BoatSide::Port).empty());
 

@@ -47,7 +47,7 @@ using namespace scov;
 
 TEST(CoverageRecorder, CanDoRayBasedCoverage)
 {
-  coverageParams param{100, 100, 1};
+  CoverageParams param{100, 100, 1};
   CoverageRecorder rec(param);
 
   SwathRecord r{-50, 0, 90, 100, 99, 50};
@@ -75,10 +75,10 @@ TEST(CoverageRecorder, CanDoRayBasedCoverage)
 
 TEST(CoverageRecorder, CanDoPointBasedCoverage)
 {
-  coverageParams param{50, 50, 1};
+  CoverageParams param{50, 50, 1};
   CoverageRecorder rec(param);
 
-  sensor_msgs::PointCloudPtr m(new sensor_msgs::PointCloud());
+  sensor_msgs::PointCloud m;
 
   // Let's paint one diagonal line: 20 cells covered
   for (int i = -10; i <= 10; i++)
@@ -86,12 +86,12 @@ TEST(CoverageRecorder, CanDoPointBasedCoverage)
     geometry_msgs::Point32 pt;
     pt.x = i;
     pt.y = i;
-    m->points.push_back(pt);
+    m.points.push_back(pt);
   }
 
   // frame id must be world !
   EXPECT_FALSE(rec.addPointCloudToCoverage(m));
-  m->header.frame_id = "world";
+  m.header.frame_id = "world";
   EXPECT_TRUE(rec.addPointCloudToCoverage(m));
 
   // Let's check if the operation region is half covered

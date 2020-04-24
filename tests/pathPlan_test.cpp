@@ -13,8 +13,6 @@
 using ::testing::_;
 using namespace scov;
 
-static coverageParams param;
-
 class SurveyHelper
 {
  public:
@@ -82,7 +80,7 @@ TEST(PathPlan, CanGenerateSimplePlan)
   const auto STBD_SWATH = 33.;
   const auto PORT_SWATH = 32.;
   const auto SPEED_MS = 2.;
-  SwathRecorder rec(param);
+  SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Stbd);
 
   SurveyHelper h(l, rec);
@@ -172,7 +170,7 @@ TEST(PathPlan, CanGenerateNoisyPlan)
   const auto STBD_SWATH = 33.;
   const auto PORT_SWATH = 32.;
   const auto SPEED_MS = 2.;
-  SwathRecorder rec(param);
+  SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Stbd);
 
   SurveyHelper h(l, rec, 3);

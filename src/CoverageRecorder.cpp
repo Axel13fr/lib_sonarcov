@@ -5,7 +5,7 @@
 
 using namespace scov;
 
-CoverageRecorder::CoverageRecorder(coverageParams param, const std::string &world_frame_id)
+CoverageRecorder::CoverageRecorder(CoverageParams param, const std::string &world_frame_id)
 {
   m_gridMap.setFrameId(world_frame_id);
   m_gridMap.setGeometry(grid_map::Length(param.width_m, param.height_m), param.resolution);
@@ -44,15 +44,15 @@ void CoverageRecorder::addRecordToCoverage(const SwathRecord &rec)
                    << "(" << out.stbd_pt.x() << "," << out.stbd_pt.y()<< ")" << " added to " << cell_cnt << " cells.");
 }
 
-bool CoverageRecorder::addPointCloudToCoverage(sensor_msgs::PointCloudConstPtr pcld)
+bool CoverageRecorder::addPointCloudToCoverage(const sensor_msgs::PointCloud& pcld)
 {
-  if (pcld->header.frame_id != m_worldFrameId)
+  if (pcld.header.frame_id != m_worldFrameId)
   {
     return false;
   }
   auto cell_cnt = 0;
   // Increment the cell where each point of the cloud falls
-  for (const auto &pt : pcld->points)
+  for (const auto &pt : pcld.points)
   {
     cell_cnt++;
     auto &elm = m_gridMap.atPosition(POINT_CLOUD_BASED_COVERAGE, grid_map::Position(pt.x, pt.y));

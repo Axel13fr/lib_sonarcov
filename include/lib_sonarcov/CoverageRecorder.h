@@ -13,7 +13,7 @@ namespace scov
 using BPoint = boost::geometry::model::d2::point_xy<double>;
 using BPolygon = boost::geometry::model::polygon<BPoint>;
 
-struct coverageParams
+struct CoverageParams
 {
   // Gridmap side lengths in x, and y-direction of the grid map [m].
   double width_m = 10000;
@@ -35,7 +35,7 @@ struct CoverageResult
 class CoverageRecorder
 {
  public:
-  CoverageRecorder(coverageParams param, const std::string &world_frame_id = "world");
+  CoverageRecorder(CoverageParams param, const std::string &world_frame_id = "world");
 
   /**
    * @brief addRecordToCoverage
@@ -49,7 +49,7 @@ class CoverageRecorder
    * @param pcld sonar point cloud in world coordinates
    * @return false if point cloud is not in world coordinates
    */
-  bool addPointCloudToCoverage(sensor_msgs::PointCloudConstPtr pcld);
+  bool addPointCloudToCoverage(const sensor_msgs::PointCloud &pcld);
 
   /**
    * @brief getCoveragePercent
