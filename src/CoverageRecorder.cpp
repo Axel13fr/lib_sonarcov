@@ -6,12 +6,18 @@
 
 using namespace scov;
 
-CoverageRecorder::CoverageRecorder(CoverageParams param, const std::string &world_frame_id)
+void CoverageRecorder::initGridMapFromParams()
 {
-  m_gridMap.setFrameId(world_frame_id);
-  m_gridMap.setGeometry(grid_map::Length(param.width_m, param.height_m), param.resolution);
+  m_gridMap.setFrameId(m_params.frame_id);
+  m_gridMap.setGeometry(grid_map::Length(m_params.width_m, m_params.height_m), m_params.resolution);
   m_gridMap.add(RAY_BASED_COVERAGE);
   m_gridMap.add(POINT_CLOUD_BASED_COVERAGE);
+  m_gridMap.add(DEPTH_MAP);
+}
+
+CoverageRecorder::CoverageRecorder(const CoverageParams& param) : m_params(param)
+{
+  initGridMapFromParams();
 
   auto p = m_gridMap.getPosition();
 
@@ -50,6 +56,14 @@ void CoverageRecorder::addRecordToCoverage(const SwathRecord &rec)
                    << "(" << out.stbd_pt.x() << "," << out.stbd_pt.y()<< ")" << " added to " << cell_cnt << " cells.");
 }
 
+void CoverageRecorder::setCellDepth(const grid_map::Position &pt, const float depth)
+{
+  auto &elm = m_gridMap.atPosition(DEPTH_MAP, pt);
+  // For now, simply override with the latest depth measured
+  // TODO: find something better like averaging and outlier rejection ?
+  elm = depth;
+}
+
 bool CoverageRecorder::addPointCloudToCoverage(const sensor_msgs::PointCloud& pcld)
 {
   if (pcld.header.frame_id != m_worldFrameId)
@@ -61,16 +75,16 @@ bool CoverageRecorder::addPointCloudToCoverage(const sensor_msgs::PointCloud& pc
   for (const auto &pt : pcld.points)
   {
     cell_cnt++;
-    addPointToGrid({pt.x, pt.y});
+    addPointToGrid(POINT_CLOUD_BASED_COVERAGE,{pt.x, pt.y});
   }
 
   ROS_DEBUG_STREAM("New pt Cloud covered " << cell_cnt << " cells.");
   return true;
 }
 
-void CoverageRecorder::addPointToGrid(const grid_map::Position& pt)
+void CoverageRecorder::addPointToGrid(const std::string layer,const grid_map::Position& pt)
 {
-  auto &elm = m_gridMap.atPosition(POINT_CLOUD_BASED_COVERAGE, pt);
+  auto &elm = m_gridMap.atPosition(layer, pt);
   if (std::isnan(elm))
   {
     elm = 1.f;
@@ -96,7 +110,8 @@ bool CoverageRecorder::addPointCloudToCoverage(const sensor_msgs::PointCloud2 &p
   for (const auto &pt : worldCld.points)
   {
     cell_cnt++;
-    addPointToGrid({pt.x,pt.y});
+    addPointToGrid(POINT_CLOUD_BASED_COVERAGE, {pt.x, pt.y});
+    setCellDepth({pt.x, pt.y}, pt.z);
   }
 
   ROS_DEBUG_STREAM("New pt Cloud covered " << cell_cnt << " cells.");
@@ -119,11 +134,11 @@ CoverageResult CoverageRecorder::getCoveragePercent(const BPolygon &op_region, u
   for (grid_map::PolygonIterator it(m_gridMap, poly); !it.isPastEnd(); ++it)
   {
     // For each cell, check if we had at least one scan
-    if (m_gridMap.at(RAY_BASED_COVERAGE, *it) >= min_ping_per_cell)
+    if (m_gridMap.at(RAY_BASED_COVERAGE, *it) > min_ping_per_cell)
     {
       ray_cells++;
     }
-    if (m_gridMap.at(POINT_CLOUD_BASED_COVERAGE, *it) >= min_ping_per_cell)
+    if (m_gridMap.at(POINT_CLOUD_BASED_COVERAGE, *it) > min_ping_per_cell)
     {
       point_cloud_cells++;
     }
@@ -133,4 +148,15 @@ CoverageResult CoverageRecorder::getCoveragePercent(const BPolygon &op_region, u
   ROS_DEBUG_STREAM("\nMeasured cells:" << point_cloud_cells << "Ray Cells" << ray_cells << "\nCells in area "
                                        << cells_in_area);
   return {(ray_cells * 100. / cells_in_area), (point_cloud_cells*100./cells_in_area)};
+}
+
+CoverageParams CoverageRecorder::getParams() const
+{
+  return m_params;
+}
+
+void CoverageRecorder::setParams(const CoverageParams &params)
+{
+  m_params = params;
+  initGridMapFromParams();
 }

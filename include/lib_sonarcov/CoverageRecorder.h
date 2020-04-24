@@ -16,6 +16,7 @@ using BPolygon = boost::geometry::model::polygon<BPoint>;
 
 struct CoverageParams
 {
+  std::string frame_id = "world";
   // Gridmap side lengths in x, and y-direction of the grid map [m].
   double width_m = 10000;
   double height_m = 10000;
@@ -36,7 +37,7 @@ struct CoverageResult
 class CoverageRecorder
 {
  public:
-  CoverageRecorder(CoverageParams param, const std::string &world_frame_id = "world");
+  CoverageRecorder(const CoverageParams &param);
 
   void clear();
 
@@ -75,11 +76,24 @@ class CoverageRecorder
 
   static constexpr auto RAY_BASED_COVERAGE = "ray_coverage";
   static constexpr auto POINT_CLOUD_BASED_COVERAGE = "point_cloud_coverage";
+  static constexpr auto DEPTH_MAP = "depth";
 
- private:
+  CoverageParams getParams() const;
+  /**
+   * @brief setParams WARNING: this resets all the coverage to apply parameters !
+   * @param params parameters to apply
+   */
+  void setParams(const CoverageParams &params);
+
+private:
   grid_map::GridMap m_gridMap;
   std::string m_worldFrameId = "world";
-  void addPointToGrid(const grid_map::Position &pt);
+
+  CoverageParams m_params;
+
+  void addPointToGrid(const std::string layer, const grid_map::Position &pt);
+  void initGridMapFromParams();
+  void setCellDepth(const grid_map::Position &pt, const float depth);
 };
 
 }  // namespace scov

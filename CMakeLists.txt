@@ -13,7 +13,7 @@ find_package(Eigen3 REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES sonarcov
-  CATKIN_DEPENDS roscpp grid_map_core sensor_msgs
+  CATKIN_DEPENDS roscpp grid_map_core sensor_msgs grid_map_ros
   DEPENDS Eigen3 Boost
 )
 
