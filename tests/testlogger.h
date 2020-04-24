@@ -20,7 +20,6 @@ public:
     TestLogger()
         : m_fileStream(get_output_file_name(), m_fileStream.out)
     {
-        //tracker.registerKalmanUpdateCb([&](KalmanFilter &kalman, bool new_track) { this->logCb(kalman, new_track); });
     }
 
     void registerPathPlanLogs(PathPlan &planner)

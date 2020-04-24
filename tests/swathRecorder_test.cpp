@@ -114,8 +114,10 @@ int main(int argc, char **argv)
 {
   // ROS logs in unit tests
   ROSCONSOLE_AUTOINIT;
+  /* To enable DEBUG logging:
   log4cxx::LoggerPtr my_logger = log4cxx::Logger::getLogger(ROSCONSOLE_DEFAULT_NAME);
-  //my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
+  my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
+  */
 
   // The following line must be executed to initialize Google Mock
   // (and Google Test) before running the tests.

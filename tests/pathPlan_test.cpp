@@ -54,6 +54,10 @@ class SurveyHelper
   }
 };
 
+static constexpr auto STBD_SWATH = 33.;
+static constexpr auto PORT_SWATH = 32.;
+static constexpr auto SPEED_MS = 2.;
+
 /**
  Op Area
     +----------------------------------------------------+
@@ -76,10 +80,6 @@ class SurveyHelper
 TEST(PathPlan, CanGenerateSimplePlan)
 {
   TestLogger l;
-
-  const auto STBD_SWATH = 33.;
-  const auto PORT_SWATH = 32.;
-  const auto SPEED_MS = 2.;
   SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Stbd);
 
@@ -166,16 +166,12 @@ TEST(PathPlan, CanGenerateSimplePlan)
 TEST(PathPlan, CanGenerateNoisyPlan)
 {
   TestLogger l;
-
-  const auto STBD_SWATH = 33.;
-  const auto PORT_SWATH = 32.;
-  const auto SPEED_MS = 2.;
   SwathRecorder rec;
   rec.SetOutputSide(BoatSide::Stbd);
 
   SurveyHelper h(l, rec, 3);
 
-  SwathRecord r{0, 0, 90., STBD_SWATH, PORT_SWATH, 16};
+  SwathRecord r{0, 0, 90., STBD_SWATH, PORT_SWATH, 20};
   // Initial pos
   EXPECT_TRUE(rec.AddRecord(r));
 
@@ -233,8 +229,10 @@ int main(int argc, char **argv)
 {
   // ROS logs in unit tests
   ROSCONSOLE_AUTOINIT;
+  /* To enable DEBUG logging:
   log4cxx::LoggerPtr my_logger = log4cxx::Logger::getLogger(ROSCONSOLE_DEFAULT_NAME);
-  //my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
+  my_logger->setLevel(ros::console::g_level_lookup[ros::console::levels::Debug]);
+  */
 
   // The following line must be executed to initialize Google Mock
   // (and Google Test) before running the tests.
