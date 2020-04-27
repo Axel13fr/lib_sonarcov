@@ -7,6 +7,7 @@
 #include <grid_map_core/GridMap.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/geometries.hpp>
+#include <GeographicLib/LocalCartesian.hpp>
 
 namespace scov
 {
@@ -65,6 +66,15 @@ class CoverageRecorder
   CoverageResult getCoveragePercent(const BPolygon &op_region, uint min_ping_per_cell =0) const;
 
   /**
+   * @brief setGridMapCenter
+   * @details sets/updates the gridmap center. This can be called
+   * when working with local cartesian coordinates updated at different locations over time.
+   * @param lat latitude of the new gridmap center
+   * @param lon longitude of the new gridmap center
+   */
+  void setGridMapCenter(double lat, double lon);
+
+  /**
    * @brief getCoverageGrid
    * @return the grid map containing coverage information
    * The different layers can be accessed via the const defined below
@@ -90,6 +100,8 @@ private:
   std::string m_worldFrameId = "world";
 
   CoverageParams m_params;
+  bool m_localCartReceived = false;
+  GeographicLib::LocalCartesian m_localCart;
 
   void addPointToGrid(const std::string layer, const grid_map::Position &pt);
   void initGridMapFromParams();

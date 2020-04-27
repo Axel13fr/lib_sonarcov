@@ -15,7 +15,7 @@ void CoverageRecorder::initGridMapFromParams()
   m_gridMap.add(DEPTH_MAP);
 }
 
-CoverageRecorder::CoverageRecorder(const CoverageParams& param) : m_params(param)
+CoverageRecorder::CoverageRecorder(const CoverageParams &param) : m_params(param)
 {
   initGridMapFromParams();
 
@@ -52,8 +52,10 @@ void CoverageRecorder::addRecordToCoverage(const SwathRecord &rec)
     }
   }
 
-  ROS_DEBUG_STREAM("New swath " << "(" << out.port_pt.x() << "," << out.port_pt.y() << ")"
-                   << "(" << out.stbd_pt.x() << "," << out.stbd_pt.y()<< ")" << " added to " << cell_cnt << " cells.");
+  ROS_DEBUG_STREAM("New swath "
+                   << "(" << out.port_pt.x() << "," << out.port_pt.y() << ")"
+                   << "(" << out.stbd_pt.x() << "," << out.stbd_pt.y() << ")"
+                   << " added to " << cell_cnt << " cells.");
 }
 
 void CoverageRecorder::setCellDepth(const grid_map::Position &pt, const float depth)
@@ -64,7 +66,7 @@ void CoverageRecorder::setCellDepth(const grid_map::Position &pt, const float de
   elm = depth;
 }
 
-bool CoverageRecorder::addPointCloudToCoverage(const sensor_msgs::PointCloud& pcld)
+bool CoverageRecorder::addPointCloudToCoverage(const sensor_msgs::PointCloud &pcld)
 {
   if (pcld.header.frame_id != m_worldFrameId)
   {
@@ -75,14 +77,14 @@ bool CoverageRecorder::addPointCloudToCoverage(const sensor_msgs::PointCloud& pc
   for (const auto &pt : pcld.points)
   {
     cell_cnt++;
-    addPointToGrid(POINT_CLOUD_BASED_COVERAGE,{pt.x, pt.y});
+    addPointToGrid(POINT_CLOUD_BASED_COVERAGE, {pt.x, pt.y});
   }
 
   ROS_DEBUG_STREAM("New pt Cloud covered " << cell_cnt << " cells.");
   return true;
 }
 
-void CoverageRecorder::addPointToGrid(const std::string layer,const grid_map::Position& pt)
+void CoverageRecorder::addPointToGrid(const std::string layer, const grid_map::Position &pt)
 {
   auto &elm = m_gridMap.atPosition(layer, pt);
   if (std::isnan(elm))
@@ -147,7 +149,40 @@ CoverageResult CoverageRecorder::getCoveragePercent(const BPolygon &op_region, u
   }
   ROS_DEBUG_STREAM("\nMeasured cells:" << point_cloud_cells << "Ray Cells" << ray_cells << "\nCells in area "
                                        << cells_in_area);
-  return {(ray_cells * 100. / cells_in_area), (point_cloud_cells*100./cells_in_area)};
+  return {(ray_cells * 100. / cells_in_area), (point_cloud_cells * 100. / cells_in_area)};
+}
+
+void CoverageRecorder::setGridMapCenter(double lat, double lon)
+{
+  if (not m_localCartReceived)
+  {
+    m_localCartReceived = true;
+    m_localCart = GeographicLib::LocalCartesian(lat, lon);
+  }
+  else
+  {
+    // Update gridmap position to new world coordinate system:
+    // let O be the old world coordinates, N the new world coordinates and T the map position
+    GeographicLib::LocalCartesian new_local(lat, lon);
+    double lat_oldRef = m_localCart.LatitudeOrigin();
+    double long_oldRef = m_localCart.LongitudeOrigin();
+    ROS_DEBUG_STREAM("Updating ref from geo(" << lat_oldRef << " ; " << long_oldRef << ") to geo("
+                                              << lat << " ; "
+                                              << lon << ")");
+    double x_oldLocal_inNewRef;
+    double y_oldLocal_inNewRef;
+    double z;
+    new_local.Forward(lat_oldRef, long_oldRef, 0, x_oldLocal_inNewRef, y_oldLocal_inNewRef, z);
+    auto map_pos_inOldRef = m_gridMap.getPosition();
+
+    // Then NT = NO + OT = coord of old local coord expressed in new local coord + coord of map in old local coord
+    auto x_new_map_pos = x_oldLocal_inNewRef + map_pos_inOldRef.x();
+    auto y_new_map_pos = y_oldLocal_inNewRef + map_pos_inOldRef.y();
+
+    grid_map::Position pos(x_new_map_pos, y_new_map_pos);
+    m_gridMap.setPosition(pos);
+    m_localCart = new_local;
+  }
 }
 
 CoverageParams CoverageRecorder::getParams() const
