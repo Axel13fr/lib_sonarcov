@@ -9,7 +9,6 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp grid_map_core sensor_msgs pcl_ros pcl_conversions)
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
-find_library(GeographicLib_LIBRARIES Geographic)
 
 catkin_package(
   INCLUDE_DIRS include
@@ -37,7 +36,7 @@ file(GLOB MANDA_SRC
 
 add_library(sonarcov SHARED ${MANDA_SRC})
 target_link_libraries(sonarcov
-   ${catkin_LIBRARIES} ${GeographicLib_LIBRARIES}
+   ${catkin_LIBRARIES}
 )
 
 #############

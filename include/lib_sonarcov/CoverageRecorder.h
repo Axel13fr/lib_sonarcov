@@ -67,12 +67,12 @@ class CoverageRecorder
 
   /**
    * @brief setGridMapCenter
-   * @details sets/updates the gridmap center. This can be called
-   * when working with local cartesian coordinates updated at different locations over time.
-   * @param lat latitude of the new gridmap center
-   * @param lon longitude of the new gridmap center
+   * Set the position of the coverage grid map.
+   * Note: This method does not change the data stored in the grid map
+   * @param x, y the 2d position of the grid map in the grid map frame [m].
    */
-  void setGridMapCenter(double lat, double lon);
+  void setGridMapPosition(const BPoint &pt);
+  BPoint getGridMapPosition();
 
   /**
    * @brief getCoverageGrid
@@ -100,8 +100,6 @@ private:
   std::string m_worldFrameId = "world";
 
   CoverageParams m_params;
-  bool m_localCartReceived = false;
-  GeographicLib::LocalCartesian m_localCart;
 
   void addPointToGrid(const std::string layer, const grid_map::Position &pt);
   void initGridMapFromParams();
