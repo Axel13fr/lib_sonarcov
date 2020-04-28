@@ -61,7 +61,7 @@ BPolygon getSquareOpRegion(const double square_size)
 
 TEST(CoverageRecorder, CanDoRayBasedCoverage)
 {
-  CoverageParams param{100, 100, 1};
+  CoverageParams param{"world",100, 100, 1};
   CoverageRecorder rec(param);
 
   SwathRecord r{-50, 0, 90, 100, 99, 50};
@@ -85,7 +85,7 @@ TEST(CoverageRecorder, CanDoRayBasedCoverage)
 
 TEST(CoverageRecorder, CanDoPointBasedCoverage)
 {
-  CoverageParams param{50, 50, 1};
+  CoverageParams param{"world",50, 50, 1};
   CoverageRecorder rec(param);
 
   sensor_msgs::PointCloud m;
